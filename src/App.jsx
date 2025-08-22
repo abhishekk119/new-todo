@@ -404,7 +404,7 @@ function App() {
                 className="createnewlistbtn"
                 onClick={() => updatelist(datestring)}
               >
-                Create New List
+                New List
               </button>
 
               <button
