@@ -367,7 +367,13 @@ input[type="checkbox"]:checked::before {
   transform: translate(-50%, -50%);
 }*/
 
-
+.small {
+  width: 20px;
+  height: 20px;
+  border: 1px solid gray;
+  background-color: gray;
+  border-radius: 50%;
+}
 
 @media (max-width: 767px) {
   .taskgroup {
