@@ -1,0 +1,201 @@
+.taskgroupwrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.taskgroup {
+  height: auto;
+  width: 700px;
+  border: 1px solid blue;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.list {
+  height: auto;
+  width: 450px;
+  border: 1px solid black;
+  margin-bottom: 20px;
+  margin: 15px;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.task-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-container-2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+}
+
+.checkbox-and-task-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.delete-button-and-time-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.editable-paragraph {
+  min-height: 1.2em;
+  outline: none;
+  margin: 0;
+  padding: 0;
+  cursor: text;
+  min-width: 100px;
+  display: inline-block;
+}
+
+.editable-paragraph.line-through {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.editable-paragraph.line-through.placeholder {
+  color: #bbb;
+}
+
+/* Remove default browser focus styles */
+.editable-paragraph:focus {
+  outline: none;
+}
+
+.categories {
+  height: 24px;
+  width: 100px;
+  border: 1px solid grey;
+  background-color: grey;
+  border-radius: 17px;
+  text-align: center;
+  color: white;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.topdiv {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative; /* Keep this for proper dropdown positioning */
+}
+
+.dropdowndiv {
+  position: absolute;
+  height: auto;
+  width: 130px;
+  border: 1px solid grey;
+  background-color: grey;
+  color: white;
+  border-radius: 10px;
+  z-index: 10;
+  margin-left: 330px;
+  /* Align with the right edge of the parent */
+}
+
+.dropdowndiv::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: 50px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid grey;
+}
+
+.list {
+  position: static; /* Change this back to static */
+  height: auto;
+  width: 450px;
+  border: 1px solid black;
+  margin-bottom: 20px;
+  margin: 15px;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.dropdowndiv p {
+  cursor: pointer;
+}
+
+.duedatediv {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+}
+
+.calendar-and-duedate {
+  position: relative;
+  display: inline-block;
+}
+
+.calendar-icon {
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 100%;
+  background-color: black;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.somediv {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.list.expanded {
+  height: auto;
+}
+
+.list.collapsed {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .taskgroup {
+    width: 90%;
+  }
+
+  .list {
+    width: 90%;
+  }
+}
