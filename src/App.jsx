@@ -533,7 +533,7 @@ function App() {
                     ) : (
                       tasks[list.id]?.length > 0 && (
                         <p style={{ color: "white" }}>
-                          All tasks completed! 🎉
+   <small className="small"></small>     All tasks completed! 
                         </p>
                       )
                     )}
