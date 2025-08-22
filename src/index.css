@@ -136,7 +136,7 @@
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid grey;
+  border-bottom: 10px solid rgb(84, 83, 83);
 }
 
 .list {
@@ -233,10 +233,10 @@ body {
 .createnewlistbtn {
   height: 35px;
   width: 80px;
-  border: 1px solid gray;
+  border: 1px solid rgb(84, 83, 83);
   border-radius: 10px;
   cursor: pointer;
-  background-color: gray;
+  background-color: rgb(84, 83, 83);
   font-family: "Inter", sans-serif;
   color: white;
 }
@@ -244,10 +244,10 @@ body {
 .collapseexpandbtn {
   height: 35px;
   width: 80px;
-  border: 1px solid gray;
+  border: 1px solid rgb(84, 83, 83);
   border-radius: 10px;
   cursor: pointer;
-  background-color: gray;
+  background-color: rgb(84, 83, 83);
   font-family: "Inter", sans-serif;
   color: white;
 }
@@ -255,10 +255,10 @@ body {
 .addtaskbtn {
   height: 35px;
   width: 80px;
-  border: 1px solid gray;
+  border: 1px solid rgb(84, 83, 83);
   border-radius: 10px;
   cursor: pointer;
-  background-color: gray;
+  background-color: rgb(84, 83, 83);
   font-family: "Inter", sans-serif;
   color: white;
 }
@@ -266,10 +266,10 @@ body {
 .deletebtn {
   height: 30px;
   width: 60px;
-  border: 1px solid gray;
+  border: 1px solid rgb(84, 83, 83);
   border-radius: 10px;
   cursor: pointer;
-  background-color: gray;
+  background-color: rgb(84, 83, 83);
   font-family: "Inter", sans-serif;
   color: white;
 }
