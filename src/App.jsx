@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import Task from "./Task";
 
@@ -49,6 +49,9 @@ const saveToStorage = (key, value) => {
 };
 
 function App() {
+  const taskGroupContainerRef = useRef(null);
+  const isEditingRef = useRef(false);
+
   // Add this at the beginning of your App component
   useEffect(() => {
     // Check if data structure is corrupted and reset if needed
@@ -132,7 +135,8 @@ function App() {
       date: taskDate,
     };
 
-    setNewTaskGroup((prev) => [...prev, newTaskGroupItem]);
+    // Add new task group to the beginning of the array
+    setNewTaskGroup((prev) => [newTaskGroupItem, ...prev]);
   }
 
   const taskGroupByDate = newTaskGroup.reduce((groups, task) => {
@@ -144,6 +148,36 @@ function App() {
   }, {});
 
   const dategroupArray = Object.entries(taskGroupByDate);
+
+  // Use insertBefore to ensure new task groups appear at the top
+  useEffect(() => {
+    // Check if user is currently editing to avoid interrupting
+    if (document.activeElement && document.activeElement.isContentEditable) {
+      isEditingRef.current = true;
+      return; // Don't reorder while user is editing
+    }
+
+    isEditingRef.current = false;
+
+    if (taskGroupContainerRef.current && dategroupArray.length > 0) {
+      const container = taskGroupContainerRef.current;
+      const children = Array.from(container.children);
+
+      // Reorder children based on the order in dategroupArray (newest first)
+      children.sort((a, b) => {
+        const aIndex = dategroupArray.findIndex(
+          ([date]) => a.querySelector("h3").textContent === date
+        );
+        const bIndex = dategroupArray.findIndex(
+          ([date]) => b.querySelector("h3").textContent === date
+        );
+        return aIndex - bIndex;
+      });
+
+      // Re-append children in correct order
+      children.forEach((child) => container.appendChild(child));
+    }
+  }, [dategroupArray]);
 
   function updatelist(datestring) {
     const newListId = Date.now();
@@ -394,130 +428,148 @@ function App() {
         </button> */}
       </div>
 
-      {dategroupArray.map(([datestring, groups]) => (
-        <div key={datestring} className="taskgroupwrapper">
-          <div className="taskgroup">
-            <div className="topoflistdiv">
-              <h3>{datestring}</h3>
+      <div ref={taskGroupContainerRef}>
+        {dategroupArray.map(([datestring, groups]) => (
+          <div key={datestring} className="taskgroupwrapper">
+            <div className="taskgroup">
+              <div className="topoflistdiv">
+                <h3>{datestring}</h3>
 
-              <button
-                className="createnewlistbtn"
-                onClick={() => updatelist(datestring)}
-              >
-                New List
-              </button>
-
-              <button
-                className="collapseexpandbtn"
-                onClick={() => toggleExpandCollapse(datestring)}
-              >
-                {taskLists[datestring]?.every((list) => expandedStates[list.id])
-                  ? "Collapse"
-                  : "Expand"}
-              </button>
-            </div>
-            {taskLists[datestring]?.map((list, index) => (
-              <div
-                key={list.id}
-                className={`list ${
-                  expandedStates[list.id] ? "expanded" : "collapsed"
-                }`}
-              >
-                <div className="topdiv">
-                  <button
-                    className="addtaskbtn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      updatetask(list.id);
-                    }}
-                  >
-                    Add Task
-                  </button>
-                  <div
-                    className="categories"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleCategories(list.id);
-                    }}
-                  >
-                    {listCategories[list.id] || "categories"}
-                  </div>
-                </div>
-
-                {openCategories === list.id && (
-                  <div className="dropdowndiv">
-                    <p
-                      onClick={() => updatecategories(list.id, "🍉 Groceries")}
-                    >
-                      🍉 Groceries
-                    </p>
-                    <p onClick={() => updatecategories(list.id, "🛒 Shopping")}>
-                      🛒 Shopping
-                    </p>
-                    <p onClick={() => updatecategories(list.id, "✨ Personal")}>
-                      ✨ Personal
-                    </p>
-                    <p onClick={() => updatecategories(list.id, "📝 General")}>
-                      📝 General
-                    </p>
-                    <p onClick={() => updatecategories(list.id, "💡 Ideas")}>
-                      💡 Ideas
-                    </p>
-                    <p onClick={() => updatecategories(list.id, "📐 Project")}>
-                      📐 Project
-                    </p>
-                    <p
-                      onClick={() => updatecategories(list.id, "‼️ Important")}
-                    >
-                      ‼️ Important
-                    </p>
-                  </div>
-                )}
-
-                {/* Display incomplete tasks message */}
-                <div className="task-status-message">
-                  {incompleteCounts[list.id] > 0 ? (
-                    <p style={{ color: "white" }}>
-                      ⚠️ You have {incompleteCounts[list.id]} incomplete task
-                      {incompleteCounts[list.id] !== 1 ? "s" : ""}
-                    </p>
-                  ) : (
-                    tasks[list.id]?.length > 0 && (
-                      <p style={{ color: "white" }}>All tasks completed! 🎉</p>
-                    )
-                  )}
-                </div>
-
-                {expandedStates[list.id] &&
-                  tasks[list.id]?.map((task) => (
-                    <Task
-                      key={task.id}
-                      task={task}
-                      onDelete={() => deleteTask(list.id, task.id)}
-                      onUpdateContent={(newContent) =>
-                        updateTaskContent(list.id, task.id, newContent)
-                      }
-                      onUpdateChecked={(checked) =>
-                        updateTaskChecked(list.id, task.id, checked)
-                      }
-                      onUpdateDueDate={(dueDate) =>
-                        updateTaskDueDate(list.id, task.id, dueDate)
-                      }
-                    />
-                  ))}
-
-                {/* Add expand/collapse button for individual list */}
-                {/* <button
-                  onClick={() => toggleSingleList(list.id)}
-                  style={{ marginTop: "10px" }}
+                <button
+                  className="createnewlistbtn"
+                  onClick={() => updatelist(datestring)}
                 >
-                  {expandedStates[list.id] ? "Collapse List" : "Expand List"}
-                </button> */}
+                  New List
+                </button>
+
+                <button
+                  className="collapseexpandbtn"
+                  onClick={() => toggleExpandCollapse(datestring)}
+                >
+                  {taskLists[datestring]?.every(
+                    (list) => expandedStates[list.id]
+                  )
+                    ? "Collapse"
+                    : "Expand"}
+                </button>
               </div>
-            ))}
+              {taskLists[datestring]?.map((list, index) => (
+                <div
+                  key={list.id}
+                  className={`list ${
+                    expandedStates[list.id] ? "expanded" : "collapsed"
+                  }`}
+                >
+                  <div className="topdiv">
+                    <button
+                      className="addtaskbtn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        updatetask(list.id);
+                      }}
+                    >
+                      Add Task
+                    </button>
+                    <div
+                      className="categories"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleCategories(list.id);
+                      }}
+                    >
+                      {listCategories[list.id] || "categories"}
+                    </div>
+                  </div>
+
+                  {openCategories === list.id && (
+                    <div className="dropdowndiv">
+                      <p
+                        onClick={() =>
+                          updatecategories(list.id, "🍉 Groceries")
+                        }
+                      >
+                        🍉 Groceries
+                      </p>
+                      <p
+                        onClick={() => updatecategories(list.id, "🛒 Shopping")}
+                      >
+                        🛒 Shopping
+                      </p>
+                      <p
+                        onClick={() => updatecategories(list.id, "✨ Personal")}
+                      >
+                        ✨ Personal
+                      </p>
+                      <p
+                        onClick={() => updatecategories(list.id, "📝 General")}
+                      >
+                        📝 General
+                      </p>
+                      <p onClick={() => updatecategories(list.id, "💡 Ideas")}>
+                        💡 Ideas
+                      </p>
+                      <p
+                        onClick={() => updatecategories(list.id, "📐 Project")}
+                      >
+                        📐 Project
+                      </p>
+                      <p
+                        onClick={() =>
+                          updatecategories(list.id, "‼️ Important")
+                        }
+                      >
+                        ‼️ Important
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Display incomplete tasks message */}
+                  <div className="task-status-message">
+                    {incompleteCounts[list.id] > 0 ? (
+                      <p style={{ color: "white" }}>
+                        ⚠️ You have {incompleteCounts[list.id]} incomplete task
+                        {incompleteCounts[list.id] !== 1 ? "s" : ""}
+                      </p>
+                    ) : (
+                      tasks[list.id]?.length > 0 && (
+                        <p style={{ color: "white" }}>
+                          All tasks completed! 🎉
+                        </p>
+                      )
+                    )}
+                  </div>
+
+                  {expandedStates[list.id] &&
+                    tasks[list.id]?.map((task) => (
+                      <Task
+                        key={task.id}
+                        task={task}
+                        onDelete={() => deleteTask(list.id, task.id)}
+                        onUpdateContent={(newContent) =>
+                          updateTaskContent(list.id, task.id, newContent)
+                        }
+                        onUpdateChecked={(checked) =>
+                          updateTaskChecked(list.id, task.id, checked)
+                        }
+                        onUpdateDueDate={(dueDate) =>
+                          updateTaskDueDate(list.id, task.id, dueDate)
+                        }
+                      />
+                    ))}
+
+                  {/* Add expand/collapse button for individual list */}
+                  {/* <button
+                    onClick={() => toggleSingleList(list.id)}
+                    style={{ marginTop: "10px" }}
+                  >
+                    {expandedStates[list.id] ? "Collapse List" : "Expand List"}
+                  </button> */}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
 
       {dategroupArray.length === 0 && (
         <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>

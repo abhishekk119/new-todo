@@ -1,4 +1,4 @@
-// Task.jsx - Final improved version
+// Task.jsx - Fixed version
 import { useRef, useEffect, useState } from "react";
 
 function Task({
@@ -55,7 +55,6 @@ function Task({
     onUpdateContent(paragraphRef.current.textContent);
   };
 
-  // Task.jsx - Add this useEffect
   useEffect(() => {
     // Focus the element on mobile when it's in placeholder state
     const handleMobileFocus = () => {
@@ -63,10 +62,8 @@ function Task({
         paragraphRef.current &&
         paragraphRef.current.textContent === "Add task..."
       ) {
-        // Small timeout to ensure the focus happens after the touch event
         setTimeout(() => {
           paragraphRef.current.focus();
-          // Move cursor to start
           const range = document.createRange();
           range.selectNodeContents(paragraphRef.current);
           range.collapse(true);
@@ -77,7 +74,6 @@ function Task({
       }
     };
 
-    // Add touch event listener for mobile devices
     if (paragraphRef.current && "ontouchstart" in window) {
       paragraphRef.current.addEventListener("touchstart", handleMobileFocus);
     }
@@ -92,10 +88,8 @@ function Task({
     };
   }, []);
 
-  // Set initial content when component mounts
   useEffect(() => {
     if (paragraphRef.current && task.content) {
-      // Only update if we're not currently editing
       if (!isEditing) {
         paragraphRef.current.textContent = task.content;
 
@@ -108,7 +102,6 @@ function Task({
     }
   }, [task.content, isEditing]);
 
-  // Update selectedDate when task.dueDate changes
   useEffect(() => {
     setSelectedDate(task.dueDate || "");
   }, [task.dueDate]);
@@ -148,16 +141,18 @@ function Task({
       <div className="duedatediv">
         <div className="calendar-and-duedate">
           <div className="date-and-duedate">
-            <input
-              type="date"
-              ref={dateInputRef}
-              onChange={handleDateChange}
-              value={selectedDate}
-            />
-            <i
-              className="fa-solid fa-calendar-days calendar-icon"
-              onClick={handleIconClick}
-            ></i>
+            <div className="calendar-icon-wrapper">
+              <input
+                type="date"
+                ref={dateInputRef}
+                onChange={handleDateChange}
+                value={selectedDate}
+              />
+              <i
+                className="fa-solid fa-calendar-days calendar-icon"
+                onClick={handleIconClick}
+              ></i>
+            </div>
             {selectedDate && (
               <span
                 style={{ marginLeft: "8px", fontSize: "14px", color: "#666" }}

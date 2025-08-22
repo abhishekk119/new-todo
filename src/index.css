@@ -278,46 +278,49 @@ body {
 
 /* Create the calendar emoji replacement */
 /* Hide the default date input visually but keep it functional */
-.calendar-and-duedate input[type="date"] {
-  position: absolute;
+/* Update the calendar icon styles */
+/* Update the calendar icon styles */
+.calendar-icon-wrapper {
+  position: relative;
+  display: inline-block;
   width: 24px;
   height: 24px;
-  opacity: 0;
-  cursor: pointer;
-  z-index: 2;
 }
 
-/* Create a container for the icon that will trigger the date picker */
+.calendar-icon-wrapper input[type="date"] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 3;
+  left: 0;
+  top: 0;
+  color: transparent;
+  background: transparent;
+  border: none;
+}
 
-/* Style the Font Awesome calendar icon */
+.calendar-icon-wrapper input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
 .calendar-and-duedate .calendar-icon {
+  position: relative;
   font-size: 18px;
   cursor: pointer;
-  position: relative;
-  z-index: 1;
+  z-index: 2;
   margin-right: 8px;
   color: #666;
   transition: color 0.2s ease;
-}
-.calendar-and-duedate input[type="date"] {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  opacity: 0;
-  cursor: pointer;
-  z-index: 2;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
-/* Add hover effect */
-.calendar-and-duedate .calendar-icon:hover {
-  color: #3366cc;
-}
-
-/* Position the due date text properly */
-.calendar-and-duedate span {
-  vertical-align: middle;
+  pointer-events: none; /* Make the icon not interfere with clicks */
 }
 
 @media (max-width: 767px) {
