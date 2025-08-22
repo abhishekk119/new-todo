@@ -222,6 +222,48 @@ function App() {
         }));
       }
 
+      // Check if the list is now empty and delete it if so
+      if (updatedTasks[listId].length === 0) {
+        // Remove the list from taskLists
+        setTaskLists((prevTaskLists) => {
+          const updatedTaskLists = { ...prevTaskLists };
+          Object.keys(updatedTaskLists).forEach((date) => {
+            updatedTaskLists[date] = updatedTaskLists[date].filter(
+              (list) => list.id !== listId
+            );
+            // Remove the date if it has no lists
+            if (updatedTaskLists[date].length === 0) {
+              delete updatedTaskLists[date];
+            }
+          });
+          return updatedTaskLists;
+        });
+
+        // Remove the list from tasks
+        delete updatedTasks[listId];
+
+        // Remove the list from listCategories
+        setListCategories((prevCategories) => {
+          const updatedCategories = { ...prevCategories };
+          delete updatedCategories[listId];
+          return updatedCategories;
+        });
+
+        // Remove the list from incompleteCounts
+        setIncompleteCounts((prevCounts) => {
+          const updatedCounts = { ...prevCounts };
+          delete updatedCounts[listId];
+          return updatedCounts;
+        });
+
+        // Remove the list from expandedStates
+        setExpandedStates((prevStates) => {
+          const updatedStates = { ...prevStates };
+          delete updatedStates[listId];
+          return updatedStates;
+        });
+      }
+
       return updatedTasks;
     });
   }
@@ -334,11 +376,11 @@ function App() {
 
   return (
     <>
-      <div
-        style={{ padding: "10px", background: "#f0f0f0", marginBottom: "20px" }}
-      >
-        <button onClick={updateTaskGroup}>Add New Task Group</button>
-        <button
+      <div className="navbar">
+        <button className="addnewtaskgroupbutton" onClick={updateTaskGroup}>
+          Add New Task Group
+        </button>
+        {/* <button
           onClick={debugStorage}
           style={{ marginLeft: "10px", background: "blue" }}
         >
@@ -349,24 +391,31 @@ function App() {
           style={{ marginLeft: "10px", background: "red", color: "white" }}
         >
           Clear All Data
-        </button>
+        </button> */}
       </div>
 
       {dategroupArray.map(([datestring, groups]) => (
         <div key={datestring} className="taskgroupwrapper">
           <div className="taskgroup">
-            <h3>{datestring}</h3>
+            <div className="topoflistdiv">
+              <h3>{datestring}</h3>
 
-            <button onClick={() => updatelist(datestring)}>
-              Create New List
-            </button>
+              <button
+                className="createnewlistbtn"
+                onClick={() => updatelist(datestring)}
+              >
+                Create New List
+              </button>
 
-            <button onClick={() => toggleExpandCollapse(datestring)}>
-              {taskLists[datestring]?.every((list) => expandedStates[list.id])
-                ? "Collapse All"
-                : "Expand All"}
-            </button>
-
+              <button
+                className="collapseexpandbtn"
+                onClick={() => toggleExpandCollapse(datestring)}
+              >
+                {taskLists[datestring]?.every((list) => expandedStates[list.id])
+                  ? "Collapse"
+                  : "Expand"}
+              </button>
+            </div>
             {taskLists[datestring]?.map((list, index) => (
               <div
                 key={list.id}
@@ -376,6 +425,7 @@ function App() {
               >
                 <div className="topdiv">
                   <button
+                    className="addtaskbtn"
                     onClick={(e) => {
                       e.stopPropagation();
                       updatetask(list.id);
@@ -427,12 +477,14 @@ function App() {
                 {/* Display incomplete tasks message */}
                 <div className="task-status-message">
                   {incompleteCounts[list.id] > 0 ? (
-                    <p>
-                      You have {incompleteCounts[list.id]} incomplete task
+                    <p style={{ color: "white" }}>
+                      ⚠️ You have {incompleteCounts[list.id]} incomplete task
                       {incompleteCounts[list.id] !== 1 ? "s" : ""}
                     </p>
                   ) : (
-                    tasks[list.id]?.length > 0 && <p>All tasks completed! 🎉</p>
+                    tasks[list.id]?.length > 0 && (
+                      <p style={{ color: "white" }}>All tasks completed! 🎉</p>
+                    )
                   )}
                 </div>
 

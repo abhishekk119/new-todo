@@ -8,7 +8,7 @@
 .taskgroup {
   height: auto;
   width: 700px;
-  border: 1px solid blue;
+  border: 1px solid #1a1a1a;
   margin-bottom: 20px;
   margin-top: 20px;
   border-radius: 10px;
@@ -17,6 +17,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-color: #1a1a1a;
 }
 
 .list {
@@ -27,6 +28,7 @@
   margin: 15px;
   border-radius: 10px;
   padding: 15px;
+  background-color: #3d3b3b;
 }
 
 .task-container {
@@ -34,6 +36,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  border-bottom: 1px solid gray;
+  margin-top: 6px;
 }
 
 .task-container-2 {
@@ -70,11 +74,11 @@
 
 .editable-paragraph.line-through {
   text-decoration: line-through;
-  color: #888;
+  color: #767676 !important;
 }
 
 .editable-paragraph.line-through.placeholder {
-  color: #bbb;
+  color: #767676 !important;
 }
 
 /* Remove default browser focus styles */
@@ -84,9 +88,9 @@
 
 .categories {
   height: 24px;
-  width: 100px;
-  border: 1px solid grey;
-  background-color: grey;
+  width: 110px;
+  border: 1px solid rgb(84, 83, 83);
+  background-color: rgb(84, 83, 83);
   border-radius: 17px;
   text-align: center;
   color: white;
@@ -105,12 +109,13 @@
   position: absolute;
   height: auto;
   width: 130px;
-  border: 1px solid grey;
-  background-color: grey;
+  border: 1px solid rgb(84, 83, 83);
+  background-color: rgb(84, 83, 83);
   color: white;
   border-radius: 10px;
   z-index: 10;
   margin-left: 330px;
+  padding-left: 10px;
   /* Align with the right edge of the parent */
 }
 
@@ -151,6 +156,10 @@
 .calendar-and-duedate {
   position: relative;
   display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .calendar-icon {
@@ -166,13 +175,15 @@
   height: 40px;
   width: 100%;
   background-color: black;
-  margin: 0;
+  margin-top: 20px;
   padding: 0;
 }
 
 body {
   margin: 0;
   padding: 0;
+  background-color: black;
+  font-family: "Inter", sans-serif;
 }
 
 .somediv {
@@ -190,6 +201,73 @@ body {
   display: none;
 }
 
+.addnewtaskgroupbutton {
+  height: 35px;
+  width: 170px;
+  border: 1px solid white;
+  border-radius: 12px;
+  cursor: pointer;
+  background-color: white;
+  font-family: "Inter", sans-serif;
+}
+
+.topoflistdiv {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.topoflistdiv h3 {
+  color: gray;
+}
+
+.createnewlistbtn {
+  height: 35px;
+  width: 120px;
+  border: 1px solid white;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: white;
+  font-family: "Inter", sans-serif;
+}
+
+.collapseexpandbtn {
+  height: 35px;
+  width: 120px;
+  border: 1px solid white;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: white;
+  font-family: "Inter", sans-serif;
+}
+
+.addtaskbtn {
+  height: 35px;
+  width: 80px;
+  border: 1px solid white;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: white;
+  font-family: "Inter", sans-serif;
+}
+
+.deletebtn {
+  height: 30px;
+  width: 60px;
+  border: 1px solid white;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: white;
+  font-family: "Inter", sans-serif;
+}
+
+.date-and-duedate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @media (max-width: 767px) {
   .taskgroup {
     width: 90%;
@@ -197,5 +275,9 @@ body {
 
   .list {
     width: 90%;
+  }
+
+  .dropdowndiv {
+    margin-left: 220px;
   }
 }

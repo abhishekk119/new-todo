@@ -98,30 +98,37 @@ function Task({
               onFocus={handleFocus}
               onBlur={handleBlur}
               onInput={handleInput}
+              style={{ color: "white" }}
             />
           </div>
         </div>
         <div className="delete-button-and-time-div">
-          <p>{task.time}</p>
-          <button onClick={handleDelete}>Delete</button>
+          <button className="deletebtn" onClick={handleDelete}>
+            Delete
+          </button>
         </div>
       </div>
       <div className="duedatediv">
         <div className="calendar-and-duedate">
-          <input
-            type="date"
-            ref={dateInputRef}
-            onChange={handleDateChange}
-            value={selectedDate}
-          />
+          <div className="date-and-duedate">
+            <input
+              type="date"
+              ref={dateInputRef}
+              onChange={handleDateChange}
+              value={selectedDate}
+            />
 
-          {selectedDate && (
-            <span
-              style={{ marginLeft: "8px", fontSize: "14px", color: "#666" }}
-            >
-              Due by: {selectedDate}
-            </span>
-          )}
+            {selectedDate && (
+              <span
+                style={{ marginLeft: "8px", fontSize: "14px", color: "#666" }}
+              >
+                Due by: {selectedDate}
+              </span>
+            )}
+          </div>
+          <div className="time">
+            <p style={{ color: "#666" }}>{task.time}</p>
+          </div>
         </div>
       </div>
     </div>
