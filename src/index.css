@@ -368,8 +368,8 @@ input[type="checkbox"]:checked::before {
 }*/
 
 .small {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border: 1px solid #2da44e;
   background-color: #2da44e;
   border-radius: 50%;
