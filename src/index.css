@@ -213,11 +213,12 @@ body {
 .addnewtaskgroupbutton {
   height: 35px;
   width: 170px;
-  border: 1px solid white;
+  border: 1px solid rgb(84, 83, 83);
   border-radius: 12px;
   cursor: pointer;
-  background-color: white;
+  background-color: rgb(84, 83, 83);
   font-family: "Inter", sans-serif;
+  color: white;
 }
 
 .topoflistdiv {
@@ -368,8 +369,8 @@ input[type="checkbox"]:checked::before {
 }*/
 
 .small {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   border: 1px solid #2da44e;
   background-color: #2da44e;
   border-radius: 50%;
