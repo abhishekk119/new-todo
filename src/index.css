@@ -379,6 +379,14 @@ input[type="checkbox"]:checked::before {
   background-size: 16px;
 }
 
+.smalldiv {
+ display: flex;
+ align-items: center;
+ justify-content: left;
+ width: 100%;
+ gap: 4px;
+}
+
 @media (max-width: 767px) {
   .taskgroup {
     width: 90%;
