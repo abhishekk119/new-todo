@@ -117,7 +117,9 @@ function Task({
               onChange={handleDateChange}
               value={selectedDate}
             />
-
+            <span className="calendar-icon" onClick={handleIconClick}>
+              📆
+            </span>
             {selectedDate && (
               <span
                 style={{ marginLeft: "8px", fontSize: "14px", color: "#666" }}
