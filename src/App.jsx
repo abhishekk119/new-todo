@@ -6,7 +6,34 @@ import Task from "./Task";
 const loadFromStorage = (key, defaultValue) => {
   try {
     const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : defaultValue;
+    if (!item) return defaultValue;
+
+    const parsed = JSON.parse(item);
+
+    // Add validation for critical data structures
+    if (key === "tasks") {
+      // Ensure tasks is always an object with array values
+      if (typeof parsed !== "object" || parsed === null) {
+        return defaultValue;
+      }
+      // Clean up any non-array values
+      Object.keys(parsed).forEach((listId) => {
+        if (!Array.isArray(parsed[listId])) {
+          parsed[listId] = [];
+        }
+      });
+      return parsed;
+    }
+
+    if (key === "taskLists") {
+      // Ensure taskLists is always an object with array values
+      if (typeof parsed !== "object" || parsed === null) {
+        return defaultValue;
+      }
+      return parsed;
+    }
+
+    return parsed;
   } catch (error) {
     console.error("Error loading from storage:", error);
     return defaultValue;
@@ -22,6 +49,29 @@ const saveToStorage = (key, value) => {
 };
 
 function App() {
+  // Add this at the beginning of your App component
+  useEffect(() => {
+    // Check if data structure is corrupted and reset if needed
+    const tasksData = loadFromStorage("tasks", {});
+    if (tasksData && typeof tasksData === "object") {
+      let needsReset = false;
+      Object.keys(tasksData).forEach((key) => {
+        if (!Array.isArray(tasksData[key])) {
+          needsReset = true;
+        }
+      });
+
+      if (needsReset) {
+        localStorage.removeItem("tasks");
+        localStorage.removeItem("taskLists");
+        localStorage.removeItem("newTaskGroup");
+        localStorage.removeItem("listCategories");
+        localStorage.removeItem("incompleteCounts");
+        localStorage.removeItem("expandedStates");
+        window.location.reload();
+      }
+    }
+  }, []);
   // Initialize ALL state from localStorage
   const [newTaskGroup, setNewTaskGroup] = useState(() =>
     loadFromStorage("newTaskGroup", [])
@@ -154,13 +204,17 @@ function App() {
 
   function deleteTask(listId, taskId) {
     setTasks((prev) => {
+      // Ensure we have an array to filter
+      const currentTasks = prev[listId];
+      const tasksArray = Array.isArray(currentTasks) ? currentTasks : [];
+
       const updatedTasks = {
         ...prev,
-        [listId]: (prev[listId] || []).filter((task) => task.id !== taskId),
+        [listId]: tasksArray.filter((task) => task.id !== taskId),
       };
 
       // Update incomplete count after deletion
-      const deletedTask = prev[listId]?.find((task) => task.id === taskId);
+      const deletedTask = tasksArray.find((task) => task.id === taskId);
       if (deletedTask && !deletedTask.checked) {
         setIncompleteCounts((prevCounts) => ({
           ...prevCounts,
