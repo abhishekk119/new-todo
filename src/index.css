@@ -70,6 +70,11 @@
   cursor: text;
   min-width: 100px;
   display: inline-block;
+  /* Improved for mobile */
+  -webkit-user-select: text;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: text;
 }
 
 .editable-paragraph.line-through {
@@ -84,6 +89,9 @@
 /* Remove default browser focus styles */
 .editable-paragraph:focus {
   outline: none;
+  /* Add visual indicator for focus */
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
 }
 
 .categories {
@@ -279,13 +287,32 @@ body {
   z-index: 2;
 }
 
-/* Add the calendar emoji as a visual element */
+/* Create a container for the icon that will trigger the date picker */
+
+/* Style the Font Awesome calendar icon */
 .calendar-and-duedate .calendar-icon {
-  font-size: 24px;
+  font-size: 18px;
   cursor: pointer;
   position: relative;
   z-index: 1;
   margin-right: 8px;
+  color: #666;
+  transition: color 0.2s ease;
+}
+.calendar-and-duedate input[type="date"] {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+/* Add hover effect */
+.calendar-and-duedate .calendar-icon:hover {
+  color: #3366cc;
 }
 
 /* Position the due date text properly */

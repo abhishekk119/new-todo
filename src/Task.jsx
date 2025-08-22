@@ -55,6 +55,43 @@ function Task({
     onUpdateContent(paragraphRef.current.textContent);
   };
 
+  // Task.jsx - Add this useEffect
+  useEffect(() => {
+    // Focus the element on mobile when it's in placeholder state
+    const handleMobileFocus = () => {
+      if (
+        paragraphRef.current &&
+        paragraphRef.current.textContent === "Add task..."
+      ) {
+        // Small timeout to ensure the focus happens after the touch event
+        setTimeout(() => {
+          paragraphRef.current.focus();
+          // Move cursor to start
+          const range = document.createRange();
+          range.selectNodeContents(paragraphRef.current);
+          range.collapse(true);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }, 50);
+      }
+    };
+
+    // Add touch event listener for mobile devices
+    if (paragraphRef.current && "ontouchstart" in window) {
+      paragraphRef.current.addEventListener("touchstart", handleMobileFocus);
+    }
+
+    return () => {
+      if (paragraphRef.current) {
+        paragraphRef.current.removeEventListener(
+          "touchstart",
+          handleMobileFocus
+        );
+      }
+    };
+  }, []);
+
   // Set initial content when component mounts
   useEffect(() => {
     if (paragraphRef.current && task.content) {
@@ -117,9 +154,10 @@ function Task({
               onChange={handleDateChange}
               value={selectedDate}
             />
-            <span className="calendar-icon" onClick={handleIconClick}>
-              📆
-            </span>
+            <i
+              className="fa-solid fa-calendar-days calendar-icon"
+              onClick={handleIconClick}
+            ></i>
             {selectedDate && (
               <span
                 style={{ marginLeft: "8px", fontSize: "14px", color: "#666" }}
