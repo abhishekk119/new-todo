@@ -530,89 +530,89 @@ function App() {
               {taskLists[datestring]?.map((list, index) => (
                 <div
                   key={list.id}
-                  className={`list ${
-                    expandedStates[list.id] ? "expanded" : "collapsed"
-                  }`}
+                  className={`list ${expandedStates[list.id] ? "expanded" : "collapsed"}`}
                 >
-                  <div className="topdiv">
-                    <button
-                      className="addtaskbtn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        updatetask(list.id);
-                      }}
-                    >
-                      Add Task
-                    </button>
-                    <div
-                      className="categories"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleCategories(list.id);
-                      }}
-                    >
-                      {listCategories[list.id] || "categories"}
+                  <div className="list-header">
+                    <div className="topdiv">
+                      <button
+                        className="addtaskbtn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          updatetask(list.id);
+                        }}
+                      >
+                        Add Task
+                      </button>
+                      <div
+                        className="categories"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleCategories(list.id);
+                        }}
+                      >
+                        {listCategories[list.id] || "categories"}
+                      </div>
                     </div>
-                  </div>
 
-                  {openCategories === list.id && (
-                    <div className="dropdowndiv">
-                      <p
-                        onClick={() =>
-                          updatecategories(list.id, "🍉 Groceries")
-                        }
-                      >
-                        🍉 Groceries
-                      </p>
-                      <p
-                        onClick={() => updatecategories(list.id, "🛒 Shopping")}
-                      >
-                        🛒 Shopping
-                      </p>
-                      <p
-                        onClick={() => updatecategories(list.id, "✨ Personal")}
-                      >
-                        ✨ Personal
-                      </p>
-                      <p
-                        onClick={() => updatecategories(list.id, "📝 General")}
-                      >
-                        📝 General
-                      </p>
-                      <p onClick={() => updatecategories(list.id, "💡 Ideas")}>
-                        💡 Ideas
-                      </p>
-                      <p
-                        onClick={() => updatecategories(list.id, "📐 Project")}
-                      >
-                        📐 Project
-                      </p>
-                      <p
-                        onClick={() =>
-                          updatecategories(list.id, "‼️ Important")
-                        }
-                      >
-                        ‼️ Important
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Display incomplete tasks message */}
-                  <div className="task-status-message">
-                    {incompleteCounts[list.id] > 0 ? (
-                      <p style={{ color: "white" }}>
-                        ⚠️ You have {incompleteCounts[list.id]} incomplete task
-                        {incompleteCounts[list.id] !== 1 ? "s" : ""}
-                      </p>
-                    ) : (
-                      tasks[list.id]?.length > 0 && (
-                     <div className="smalldiv"> <div className="small"></div>
-  <p style={{ color: "white" }}>
-        All tasks completed! 
+                    {openCategories === list.id && (
+                      <div className="dropdowndiv">
+                        <p
+                          onClick={() =>
+                            updatecategories(list.id, "🍉 Groceries")
+                          }
+                        >
+                          🍉 Groceries
                         </p>
-                       </div>
-                      )
+                        <p
+                          onClick={() => updatecategories(list.id, "🛒 Shopping")}
+                        >
+                          🛒 Shopping
+                        </p>
+                        <p
+                          onClick={() => updatecategories(list.id, "✨ Personal")}
+                        >
+                          ✨ Personal
+                        </p>
+                        <p
+                          onClick={() => updatecategories(list.id, "📝 General")}
+                        >
+                          📝 General
+                        </p>
+                        <p onClick={() => updatecategories(list.id, "💡 Ideas")}>
+                          💡 Ideas
+                        </p>
+                        <p
+                          onClick={() => updatecategories(list.id, "📐 Project")}
+                        >
+                          📐 Project
+                        </p>
+                        <p
+                          onClick={() =>
+                            updatecategories(list.id, "‼️ Important")
+                          }
+                        >
+                          ‼️ Important
+                        </p>
+                      </div>
                     )}
+
+                    {/* Display incomplete tasks message */}
+                    <div className="task-status-message">
+                      {incompleteCounts[list.id] > 0 ? (
+                        <p style={{ color: "white" }}>
+                          ⚠️ You have {incompleteCounts[list.id]} incomplete task
+                          {incompleteCounts[list.id] !== 1 ? "s" : ""}
+                        </p>
+                      ) : (
+                        tasks[list.id]?.length > 0 && (
+                        <div className="smalldiv"> <div className="small"></div>
+      <p style={{ color: "white" }}>
+            All tasks completed! 
+                            </p>
+                          </div>
+                        )
+                      )}
+                    </div>
                   </div>
 
                   <div className={`tasks-container ${expandedStates[list.id] ? "expanded" : "collapsed"}`}>
