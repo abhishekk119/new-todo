@@ -454,18 +454,14 @@ input[type="checkbox"]:checked::before {
   overflow: hidden;
 }
 
-.list-header {
-  width: 100%;
-}
 
 
-
-.tasks-container.expanded {
+.task-wrapper.expanded {
   max-height: 1000px;
   
 }
 
-.tasks-container.collapsed {
+.task-wrapper.collapsed {
   display: none;
 }
 
