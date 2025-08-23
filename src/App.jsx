@@ -48,6 +48,23 @@ const saveToStorage = (key, value) => {
   }
 };
 
+// Helper function to get current date string
+const getCurrentDateString = () => {
+  const today = new Date();
+  return `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+};
+
+// Helper function to compare dates
+const isDateAfter = (date1, date2) => {
+  const [day1, month1, year1] = date1.split('/').map(Number);
+  const [day2, month2, year2] = date2.split('/').map(Number);
+  
+  const dateObj1 = new Date(year1, month1 - 1, day1);
+  const dateObj2 = new Date(year2, month2 - 1, day2);
+  
+  return dateObj1 > dateObj2;
+};
+
 function App() {
   const taskGroupContainerRef = useRef(null);
   const isEditingRef = useRef(false);
@@ -71,7 +88,6 @@ function App() {
         localStorage.removeItem("listCategories");
         localStorage.removeItem("incompleteCounts");
         localStorage.removeItem("expandedStates");
-        localStorage.removeItem("lastEditDates");
         window.location.reload();
       }
     }
@@ -94,9 +110,6 @@ function App() {
   const [expandedStates, setExpandedStates] = useState(() =>
     loadFromStorage("expandedStates", {})
   );
-  const [lastEditDates, setLastEditDates] = useState(() =>
-    loadFromStorage("lastEditDates", {})
-  );
 
   // Save ALL data whenever ANY state changes
   useEffect(() => {
@@ -106,7 +119,6 @@ function App() {
     saveToStorage("listCategories", listCategories);
     saveToStorage("incompleteCounts", incompleteCounts);
     saveToStorage("expandedStates", expandedStates);
-    saveToStorage("lastEditDates", lastEditDates);
   }, [
     newTaskGroup,
     taskLists,
@@ -114,7 +126,6 @@ function App() {
     listCategories,
     incompleteCounts,
     expandedStates,
-    lastEditDates,
   ]);
 
   // Calculate incomplete tasks whenever tasks change
@@ -185,16 +196,6 @@ function App() {
     }
   }, [dategroupArray]);
 
-  const updateEditDate = (listId) => {
-    const today = new Date();
-    const editDate = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
-    
-    setLastEditDates(prev => ({
-      ...prev,
-      [listId]: editDate
-    }));
-  };
-
   function updatelist(datestring) {
     const newListId = Date.now();
 
@@ -223,9 +224,6 @@ function App() {
       ...prev,
       [newListId]: true,
     }));
-
-    // Set initial edit date
-    updateEditDate(newListId);
   }
 
   function updatetask(listId) {
@@ -241,6 +239,8 @@ function App() {
       content: "Add task...",
       checked: false,
       dueDate: "",
+      createdDate: getCurrentDateString(),
+      lastEditedDate: getCurrentDateString(),
     };
 
     setTasks((prev) => ({
@@ -253,9 +253,6 @@ function App() {
       ...prev,
       [listId]: (prev[listId] || 0) + 1,
     }));
-
-    // Update edit date
-    updateEditDate(listId);
   }
 
   function deleteTask(listId, taskId) {
@@ -318,38 +315,34 @@ function App() {
           delete updatedStates[listId];
           return updatedStates;
         });
-
-        // Remove the list from lastEditDates
-        setLastEditDates((prevDates) => {
-          const updatedDates = { ...prevDates };
-          delete updatedDates[listId];
-          return updatedDates;
-        });
       }
 
       return updatedTasks;
     });
-
-    // Update edit date
-    updateEditDate(listId);
   }
 
   function updateTaskContent(listId, taskId, newContent) {
     setTasks((prev) => ({
       ...prev,
       [listId]: (prev[listId] || []).map((task) =>
-        task.id === taskId ? { ...task, content: newContent } : task
+        task.id === taskId ? { 
+          ...task, 
+          content: newContent,
+          lastEditedDate: getCurrentDateString()
+        } : task
       ),
     }));
-    
-    updateEditDate(listId);
   }
 
   function updateTaskChecked(listId, taskId, checked) {
     setTasks((prev) => ({
       ...prev,
       [listId]: (prev[listId] || []).map((task) =>
-        task.id === taskId ? { ...task, checked: checked } : task
+        task.id === taskId ? { 
+          ...task, 
+          checked: checked,
+          lastEditedDate: getCurrentDateString()
+        } : task
       ),
     }));
 
@@ -370,19 +363,19 @@ function App() {
         };
       }
     });
-    
-    updateEditDate(listId);
   }
 
   function updateTaskDueDate(listId, taskId, dueDate) {
     setTasks((prev) => ({
       ...prev,
       [listId]: (prev[listId] || []).map((task) =>
-        task.id === taskId ? { ...task, dueDate: dueDate } : task
+        task.id === taskId ? { 
+          ...task, 
+          dueDate: dueDate,
+          lastEditedDate: getCurrentDateString()
+        } : task
       ),
     }));
-    
-    updateEditDate(listId);
   }
 
   function toggleCategories(listId) {
@@ -395,8 +388,6 @@ function App() {
       [listId]: category,
     }));
     setOpenCategories(null);
-    
-    updateEditDate(listId);
   }
 
   // Toggle expand/collapse for all lists in a task group
@@ -421,22 +412,6 @@ function App() {
     }));
   };
 
-  // Check if a list was edited on a different date
-  const wasEditedLater = (listId, groupDate) => {
-    const editDate = lastEditDates[listId];
-    if (!editDate) return false;
-    
-    // Parse dates for comparison
-    const [editDay, editMonth, editYear] = editDate.split('/').map(Number);
-    const [groupDay, groupMonth, groupYear] = groupDate.split('/').map(Number);
-    
-    // Create Date objects for comparison
-    const editDateObj = new Date(editYear, editMonth - 1, editDay);
-    const groupDateObj = new Date(groupYear, groupMonth - 1, groupDay);
-    
-    return editDateObj > groupDateObj;
-  };
-
   // Debug function to check storage
   const debugStorage = () => {
     console.log("Storage contents:");
@@ -446,7 +421,6 @@ function App() {
     console.log("listCategories:", loadFromStorage("listCategories", {}));
     console.log("incompleteCounts:", loadFromStorage("incompleteCounts", {}));
     console.log("expandedStates:", loadFromStorage("expandedStates", {}));
-    console.log("lastEditDates:", loadFromStorage("lastEditDates", {}));
   };
 
   // Clear all data
@@ -457,14 +431,12 @@ function App() {
     localStorage.removeItem("listCategories");
     localStorage.removeItem("incompleteCounts");
     localStorage.removeItem("expandedStates");
-    localStorage.removeItem("lastEditDates");
     setNewTaskGroup([]);
     setTaskLists({});
     setTasks({});
     setListCategories({});
     setIncompleteCounts({});
     setExpandedStates({});
-    setLastEditDates({});
   };
 
   return (
@@ -598,36 +570,31 @@ function App() {
                        </div>
                       )
                     )}
-                    
-                    {/* Add the edited on message */}
-                    {wasEditedLater(list.id, datestring) && (
-                      <p style={{ 
-                        color: "#ffa500", 
-                        fontSize: "12px", 
-                        marginTop: "5px",
-                        fontStyle: "italic"
-                      }}>
-                        Edited on {lastEditDates[list.id]}
-                      </p>
-                    )}
                   </div>
 
                   {expandedStates[list.id] &&
                     tasks[list.id]?.map((task) => (
-                      <Task
-                        key={task.id}
-                        task={task}
-                        onDelete={() => deleteTask(list.id, task.id)}
-                        onUpdateContent={(newContent) =>
-                          updateTaskContent(list.id, task.id, newContent)
-                        }
-                        onUpdateChecked={(checked) =>
-                          updateTaskChecked(list.id, task.id, checked)
-                        }
-                        onUpdateDueDate={(dueDate) =>
-                          updateTaskDueDate(list.id, task.id, dueDate)
-                        }
-                      />
+                      <div key={task.id} className="task-wrapper">
+                        <Task
+                          task={task}
+                          onDelete={() => deleteTask(list.id, task.id)}
+                          onUpdateContent={(newContent) =>
+                            updateTaskContent(list.id, task.id, newContent)
+                          }
+                          onUpdateChecked={(checked) =>
+                            updateTaskChecked(list.id, task.id, checked)
+                          }
+                          onUpdateDueDate={(dueDate) =>
+                            updateTaskDueDate(list.id, task.id, dueDate)
+                          }
+                        />
+                        {/* Show edited message if task was created/edited on a date after the task group date */}
+                        {task.lastEditedDate && isDateAfter(task.lastEditedDate, datestring) && (
+                          <div className="task-edited-message">
+                            <span>Edited on {task.lastEditedDate}</span>
+                          </div>
+                        )}
+                      </div>
                     ))}
 
                   {/* Add expand/collapse button for individual list */}
