@@ -454,6 +454,41 @@ input[type="checkbox"]:checked::before {
   overflow: hidden;
 }
 
+.list-header {
+  width: 100%;
+}
+
+.tasks-container {
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+  width: 100%;
+}
+
+.tasks-container.expanded {
+  max-height: 1000px;
+  opacity: 1;
+  visibility: visible;
+}
+
+.tasks-container.collapsed {
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.expand-collapse-list-btn {
+  height: 35px;
+  width: 120px;
+  border: 1px solid rgb(84, 83, 83);
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: rgb(84, 83, 83);
+  font-family: "Inter", sans-serif;
+  color: white;
+  margin-top: 10px;
+  align-self: center;
+}
+
 @media (max-width: 767px) {
   .taskgroup {
     width: 90%;
