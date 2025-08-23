@@ -530,9 +530,7 @@ function App() {
               {taskLists[datestring]?.map((list, index) => (
                 <div
                   key={list.id}
-                  className={`list ${
-                    expandedStates[list.id] ? "expanded" : "collapsed"
-                  }`}
+                  className="list"
                 >
                   <div className="topdiv">
                     <button
@@ -624,8 +622,8 @@ function App() {
                     )}
                   </div>
 
-                  {expandedStates[list.id] &&
-                    tasks[list.id]?.map((task) => (
+                  <div className={`tasks-container ${expandedStates[list.id] ? 'expanded' : 'collapsed'}`}>
+                    {tasks[list.id]?.map((task) => (
                       <div key={task.id} className="task-wrapper">
                         <Task
                           task={task}
@@ -648,14 +646,7 @@ function App() {
                         )}
                       </div>
                     ))}
-
-                  {/* Add expand/collapse button for individual list */}
-                  {/* <button
-                    onClick={() => toggleSingleList(list.id)}
-                    style={{ marginTop: "10px" }}
-                  >
-                    {expandedStates[list.id] ? "Collapse List" : "Expand List"}
-                  </button> */}
+                  </div>
                 </div>
               ))}
               
