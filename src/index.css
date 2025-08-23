@@ -458,22 +458,15 @@ input[type="checkbox"]:checked::before {
   width: 100%;
 }
 
-.tasks-container {
-  transition: all 0.3s ease-in-out;
-  overflow: hidden;
-  width: 100%;
-}
+
 
 .tasks-container.expanded {
   max-height: 1000px;
-  opacity: 1;
-  visibility: visible;
+  
 }
 
 .tasks-container.collapsed {
-  max-height: 0;
-  opacity: 0;
-  visibility: hidden;
+  display: none;
 }
 
 .expand-collapse-list-btn {
