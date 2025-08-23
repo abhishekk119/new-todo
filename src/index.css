@@ -388,6 +388,19 @@ input[type="checkbox"]:checked::before {
  gap: 4px;
 }
 
+.task-wrapper {
+  position: relative;
+}
+
+.task-edited-message {
+  font-size: 11px;
+  color: #ffa500;
+  text-align: right;
+  margin-top: -8px;
+  margin-bottom: 10px;
+  padding-right: 10px;
+}
+
 @media (max-width: 767px) {
   .taskgroup {
     width: 90%;
