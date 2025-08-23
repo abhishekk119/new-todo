@@ -413,7 +413,7 @@ input[type="checkbox"]:checked::before {
   color: white;
   border: none;
   padding: 8px 16px;
-  border-radius: 4px;
+  border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
 }
