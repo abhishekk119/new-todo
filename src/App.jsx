@@ -618,7 +618,7 @@ function App() {
                   <div className= "tasks-container">
                     {tasks[list.id]?.map((task) => (
                       <div key={task.id} 
-                        className={`task-wrapper ${expandedStates[list.id] ? "expanded" : "collapsed"}`}
+                        className={`task-wrapper ${expandedStates[list.id] ? "expandedd" : "collapsedd"}`}
                         >
                         <Task
                           task={task}
