@@ -445,15 +445,6 @@ input[type="checkbox"]:checked::before {
   font-size: 14px;
 }
 
-.tasks-container.expanded {
-  /* Normal expanded state */
-}
-
-.tasks-container.collapsed {
-  max-height: 0;
-  overflow: hidden;
-}
-
 
 
 .task-wrapper.expanded {
