@@ -615,9 +615,10 @@ function App() {
                     </div>
                   </div>
 
-                  <div className={`tasks-container ${expandedStates[list.id] ? "expanded" : "collapsed"}`}>
+                  <div className= "tasks-container">
                     {tasks[list.id]?.map((task) => (
-                      <div key={task.id} className="task-wrapper">
+                      <div key={task.id} 
+                        className={`task-wrapper ${expandedStates[list.id] ? "expanded" : "collapsed"}`}
                         <Task
                           task={task}
                           onDelete={() => deleteTask(list.id, task.id)}
