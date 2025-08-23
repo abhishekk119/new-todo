@@ -142,7 +142,7 @@ function App() {
   }, [tasks]);
 
   function updateTaskGroup() {
-    const today = new Date();
+    const today = new Date(Date.now() + 86400000);
     const taskDate = `${today.getDate()}/${
       today.getMonth() + 1
     }/${today.getFullYear()}`;
