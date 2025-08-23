@@ -71,6 +71,7 @@ function App() {
         localStorage.removeItem("listCategories");
         localStorage.removeItem("incompleteCounts");
         localStorage.removeItem("expandedStates");
+        localStorage.removeItem("lastEditDates");
         window.location.reload();
       }
     }
@@ -93,6 +94,9 @@ function App() {
   const [expandedStates, setExpandedStates] = useState(() =>
     loadFromStorage("expandedStates", {})
   );
+  const [lastEditDates, setLastEditDates] = useState(() =>
+    loadFromStorage("lastEditDates", {})
+  );
 
   // Save ALL data whenever ANY state changes
   useEffect(() => {
@@ -102,6 +106,7 @@ function App() {
     saveToStorage("listCategories", listCategories);
     saveToStorage("incompleteCounts", incompleteCounts);
     saveToStorage("expandedStates", expandedStates);
+    saveToStorage("lastEditDates", lastEditDates);
   }, [
     newTaskGroup,
     taskLists,
@@ -109,6 +114,7 @@ function App() {
     listCategories,
     incompleteCounts,
     expandedStates,
+    lastEditDates,
   ]);
 
   // Calculate incomplete tasks whenever tasks change
@@ -179,6 +185,16 @@ function App() {
     }
   }, [dategroupArray]);
 
+  const updateEditDate = (listId) => {
+    const today = new Date();
+    const editDate = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+    
+    setLastEditDates(prev => ({
+      ...prev,
+      [listId]: editDate
+    }));
+  };
+
   function updatelist(datestring) {
     const newListId = Date.now();
 
@@ -207,6 +223,9 @@ function App() {
       ...prev,
       [newListId]: true,
     }));
+
+    // Set initial edit date
+    updateEditDate(newListId);
   }
 
   function updatetask(listId) {
@@ -234,6 +253,9 @@ function App() {
       ...prev,
       [listId]: (prev[listId] || 0) + 1,
     }));
+
+    // Update edit date
+    updateEditDate(listId);
   }
 
   function deleteTask(listId, taskId) {
@@ -296,10 +318,20 @@ function App() {
           delete updatedStates[listId];
           return updatedStates;
         });
+
+        // Remove the list from lastEditDates
+        setLastEditDates((prevDates) => {
+          const updatedDates = { ...prevDates };
+          delete updatedDates[listId];
+          return updatedDates;
+        });
       }
 
       return updatedTasks;
     });
+
+    // Update edit date
+    updateEditDate(listId);
   }
 
   function updateTaskContent(listId, taskId, newContent) {
@@ -309,6 +341,8 @@ function App() {
         task.id === taskId ? { ...task, content: newContent } : task
       ),
     }));
+    
+    updateEditDate(listId);
   }
 
   function updateTaskChecked(listId, taskId, checked) {
@@ -336,6 +370,8 @@ function App() {
         };
       }
     });
+    
+    updateEditDate(listId);
   }
 
   function updateTaskDueDate(listId, taskId, dueDate) {
@@ -345,6 +381,8 @@ function App() {
         task.id === taskId ? { ...task, dueDate: dueDate } : task
       ),
     }));
+    
+    updateEditDate(listId);
   }
 
   function toggleCategories(listId) {
@@ -357,6 +395,8 @@ function App() {
       [listId]: category,
     }));
     setOpenCategories(null);
+    
+    updateEditDate(listId);
   }
 
   // Toggle expand/collapse for all lists in a task group
@@ -381,6 +421,22 @@ function App() {
     }));
   };
 
+  // Check if a list was edited on a different date
+  const wasEditedLater = (listId, groupDate) => {
+    const editDate = lastEditDates[listId];
+    if (!editDate) return false;
+    
+    // Parse dates for comparison
+    const [editDay, editMonth, editYear] = editDate.split('/').map(Number);
+    const [groupDay, groupMonth, groupYear] = groupDate.split('/').map(Number);
+    
+    // Create Date objects for comparison
+    const editDateObj = new Date(editYear, editMonth - 1, editDay);
+    const groupDateObj = new Date(groupYear, groupMonth - 1, groupDay);
+    
+    return editDateObj > groupDateObj;
+  };
+
   // Debug function to check storage
   const debugStorage = () => {
     console.log("Storage contents:");
@@ -390,6 +446,7 @@ function App() {
     console.log("listCategories:", loadFromStorage("listCategories", {}));
     console.log("incompleteCounts:", loadFromStorage("incompleteCounts", {}));
     console.log("expandedStates:", loadFromStorage("expandedStates", {}));
+    console.log("lastEditDates:", loadFromStorage("lastEditDates", {}));
   };
 
   // Clear all data
@@ -400,12 +457,14 @@ function App() {
     localStorage.removeItem("listCategories");
     localStorage.removeItem("incompleteCounts");
     localStorage.removeItem("expandedStates");
+    localStorage.removeItem("lastEditDates");
     setNewTaskGroup([]);
     setTaskLists({});
     setTasks({});
     setListCategories({});
     setIncompleteCounts({});
     setExpandedStates({});
+    setLastEditDates({});
   };
 
   return (
@@ -538,6 +597,18 @@ function App() {
                         </p>
                        </div>
                       )
+                    )}
+                    
+                    {/* Add the edited on message */}
+                    {wasEditedLater(list.id, datestring) && (
+                      <p style={{ 
+                        color: "#ffa500", 
+                        fontSize: "12px", 
+                        marginTop: "5px",
+                        fontStyle: "italic"
+                      }}>
+                        Edited on {lastEditDates[list.id]}
+                      </p>
                     )}
                   </div>
 
