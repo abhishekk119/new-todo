@@ -683,17 +683,12 @@ function App() {
 
                   {/* Add expand/collapse buttons for individual list and tasks */}
                   <div className="list-control-buttons">
+                    
                     <button
                       className="expand-collapse-list-btn"
-                      onClick={() => toggleSingleList(list.id)}
-                    >
-                      {expandedStates[list.id] ? "Collapse List" : "Expand List"}
-                    </button>
-                    <button
-                      className="expand-collapse-tasks-btn"
                       onClick={() => toggleSingleTasks(list.id)}
                     >
-                      {tasksExpandedStates[list.id] ? "Collapse Tasks" : "Expand Tasks"}
+                      {tasksExpandedStates[list.id] ? "Collapse" : "Expand"}
                     </button>
                   </div>
                 </div>
