@@ -88,6 +88,7 @@ function App() {
         localStorage.removeItem("listCategories");
         localStorage.removeItem("incompleteCounts");
         localStorage.removeItem("expandedStates");
+        localStorage.removeItem("tasksExpandedStates");
         window.location.reload();
       }
     }
@@ -110,6 +111,9 @@ function App() {
   const [expandedStates, setExpandedStates] = useState(() =>
     loadFromStorage("expandedStates", {})
   );
+  const [tasksExpandedStates, setTasksExpandedStates] = useState(() =>
+    loadFromStorage("tasksExpandedStates", {})
+  );
 
   // Save ALL data whenever ANY state changes
   useEffect(() => {
@@ -119,6 +123,7 @@ function App() {
     saveToStorage("listCategories", listCategories);
     saveToStorage("incompleteCounts", incompleteCounts);
     saveToStorage("expandedStates", expandedStates);
+    saveToStorage("tasksExpandedStates", tasksExpandedStates);
   }, [
     newTaskGroup,
     taskLists,
@@ -126,6 +131,7 @@ function App() {
     listCategories,
     incompleteCounts,
     expandedStates,
+    tasksExpandedStates,
   ]);
 
   // Calculate incomplete tasks whenever tasks change
@@ -237,6 +243,13 @@ function App() {
       listIds.forEach(id => delete updated[id]);
       return updated;
     });
+    
+    // Remove tasks expanded states for lists in this task group
+    setTasksExpandedStates(prev => {
+      const updated = {...prev};
+      listIds.forEach(id => delete updated[id]);
+      return updated;
+    });
   }
 
   function updatelist(datestring) {
@@ -264,6 +277,12 @@ function App() {
 
     // Set new list to expanded by default
     setExpandedStates((prev) => ({
+      ...prev,
+      [newListId]: true,
+    }));
+    
+    // Set new tasks container to expanded by default
+    setTasksExpandedStates((prev) => ({
       ...prev,
       [newListId]: true,
     }));
@@ -358,6 +377,13 @@ function App() {
           delete updatedStates[listId];
           return updatedStates;
         });
+        
+        // Remove the list from tasksExpandedStates
+        setTasksExpandedStates((prevStates) => {
+          const updatedStates = { ...prevStates };
+          delete updatedStates[listId];
+          return updatedStates;
+        });
       }
 
       return updatedTasks;
@@ -439,17 +465,28 @@ function App() {
     const allExpanded = listIds.every((id) => expandedStates[id]);
 
     const newExpandedStates = { ...expandedStates };
+    const newTasksExpandedStates = { ...tasksExpandedStates };
 
     listIds.forEach((id) => {
       newExpandedStates[id] = !allExpanded;
+      newTasksExpandedStates[id] = !allExpanded;
     });
 
     setExpandedStates(newExpandedStates);
+    setTasksExpandedStates(newTasksExpandedStates);
   };
 
-  // Toggle expand/collapse for a single list
+  // Toggle expand/collapse for a single list container
   const toggleSingleList = (listId) => {
     setExpandedStates((prev) => ({
+      ...prev,
+      [listId]: !prev[listId],
+    }));
+  };
+
+  // Toggle expand/collapse for tasks container in a single list
+  const toggleSingleTasks = (listId) => {
+    setTasksExpandedStates((prev) => ({
       ...prev,
       [listId]: !prev[listId],
     }));
@@ -464,6 +501,7 @@ function App() {
     console.log("listCategories:", loadFromStorage("listCategories", {}));
     console.log("incompleteCounts:", loadFromStorage("incompleteCounts", {}));
     console.log("expandedStates:", loadFromStorage("expandedStates", {}));
+    console.log("tasksExpandedStates:", loadFromStorage("tasksExpandedStates", {}));
   };
 
   // Clear all data
@@ -474,12 +512,14 @@ function App() {
     localStorage.removeItem("listCategories");
     localStorage.removeItem("incompleteCounts");
     localStorage.removeItem("expandedStates");
+    localStorage.removeItem("tasksExpandedStates");
     setNewTaskGroup([]);
     setTaskLists({});
     setTasks({});
     setListCategories({});
     setIncompleteCounts({});
     setExpandedStates({});
+    setTasksExpandedStates({});
   };
 
   return (
@@ -615,11 +655,9 @@ function App() {
                     </div>
                   </div>
 
-                  <div className= "tasks-container">
+                  <div className={`tasks-container ${tasksExpandedStates[list.id] ? "expandedd" : "collapsedd"}`}>
                     {tasks[list.id]?.map((task) => (
-                      <div key={task.id} 
-                        className={`task-wrapper ${expandedStates[list.id] ? "expandedd" : "collapsedd"}`}
-                        >
+                      <div key={task.id} className="task-wrapper">
                         <Task
                           task={task}
                           onDelete={() => deleteTask(list.id, task.id)}
@@ -643,13 +681,21 @@ function App() {
                     ))}
                   </div>
 
-                  {/* Add expand/collapse button for individual list */}
-                  <button
-                    className="expand-collapse-list-btn"
-                    onClick={() => toggleSingleList(list.id)}
-                  >
-                    {expandedStates[list.id] ? "Collapse List" : "Expand List"}
-                  </button>
+                  {/* Add expand/collapse buttons for individual list and tasks */}
+                  <div className="list-control-buttons">
+                    <button
+                      className="expand-collapse-list-btn"
+                      onClick={() => toggleSingleList(list.id)}
+                    >
+                      {expandedStates[list.id] ? "Collapse List" : "Expand List"}
+                    </button>
+                    <button
+                      className="expand-collapse-tasks-btn"
+                      onClick={() => toggleSingleTasks(list.id)}
+                    >
+                      {tasksExpandedStates[list.id] ? "Collapse Tasks" : "Expand Tasks"}
+                    </button>
+                  </div>
                 </div>
               ))}
               
