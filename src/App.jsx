@@ -69,9 +69,8 @@ function App() {
   const taskGroupContainerRef = useRef(null);
   const isEditingRef = useRef(false);
 
-  // Add this at the beginning of your App component
+  // Check for corrupted data structure
   useEffect(() => {
-    // Check if data structure is corrupted and reset if needed
     const tasksData = loadFromStorage("tasks", {});
     if (tasksData && typeof tasksData === "object") {
       let needsReset = false;
@@ -92,6 +91,7 @@ function App() {
       }
     }
   }, []);
+
   // Initialize ALL state from localStorage
   const [newTaskGroup, setNewTaskGroup] = useState(() =>
     loadFromStorage("newTaskGroup", [])
@@ -336,48 +336,6 @@ function App() {
         }));
       }
 
-      // Check if the list is now empty and delete it if so
-      if (updatedTasks[listId].length === 0) {
-        // Remove the list from taskLists
-        setTaskLists((prevTaskLists) => {
-          const updatedTaskLists = { ...prevTaskLists };
-          Object.keys(updatedTaskLists).forEach((date) => {
-            updatedTaskLists[date] = updatedTaskLists[date].filter(
-              (list) => list.id !== listId
-            );
-            // Remove the date if it has no lists
-            if (updatedTaskLists[date].length === 0) {
-              delete updatedTaskLists[date];
-            }
-          });
-          return updatedTaskLists;
-        });
-
-        // Remove the list from tasks
-        delete updatedTasks[listId];
-
-        // Remove the list from listCategories
-        setListCategories((prevCategories) => {
-          const updatedCategories = { ...prevCategories };
-          delete updatedCategories[listId];
-          return updatedCategories;
-        });
-
-        // Remove the list from incompleteCounts
-        setIncompleteCounts((prevCounts) => {
-          const updatedCounts = { ...prevCounts };
-          delete updatedCounts[listId];
-          return updatedCounts;
-        });
-
-        // Remove the list from expandedStates
-        setExpandedStates((prevStates) => {
-          const updatedStates = { ...prevStates };
-          delete updatedStates[listId];
-          return updatedStates;
-        });
-      }
-
       return updatedTasks;
     });
   }
@@ -467,54 +425,12 @@ function App() {
     }));
   };
 
-  // Debug function to check storage
-  const debugStorage = () => {
-    console.log("Storage contents:");
-    console.log("newTaskGroup:", loadFromStorage("newTaskGroup", []));
-    console.log("taskLists:", loadFromStorage("taskLists", {}));
-    console.log("tasks:", loadFromStorage("tasks", {}));
-    console.log("listCategories:", loadFromStorage("listCategories", {}));
-    console.log("incompleteCounts:", loadFromStorage("incompleteCounts", {}));
-    console.log("expandedStates:", loadFromStorage("expandedStates", {}));
-    console.log("taskGroupExpandedStates:", loadFromStorage("taskGroupExpandedStates", {}));
-  };
-
-  // Clear all data
-  const clearAllData = () => {
-    localStorage.removeItem("newTaskGroup");
-    localStorage.removeItem("taskLists");
-    localStorage.removeItem("tasks");
-    localStorage.removeItem("listCategories");
-    localStorage.removeItem("incompleteCounts");
-    localStorage.removeItem("expandedStates");
-    localStorage.removeItem("taskGroupExpandedStates");
-    setNewTaskGroup([]);
-    setTaskLists({});
-    setTasks({});
-    setListCategories({});
-    setIncompleteCounts({});
-    setExpandedStates({});
-    setTaskGroupExpandedStates({});
-  };
-
   return (
     <>
       <div className="navbar">
         <button className="addnewtaskgroupbutton" onClick={updateTaskGroup}>
           Add New Task Group
         </button>
-        {/* <button
-          onClick={debugStorage}
-          style={{ marginLeft: "10px", background: "blue" }}
-        >
-          Debug Storage
-        </button>
-        <button
-          onClick={clearAllData}
-          style={{ marginLeft: "10px", background: "red", color: "white" }}
-        >
-          Clear All Data
-        </button> */}
       </div>
 
       <div ref={taskGroupContainerRef}>
@@ -538,10 +454,11 @@ function App() {
                   {taskGroupExpandedStates[datestring] ? "Collapse" : "Expand"}
                 </button>
               </div>
-              {taskGroupExpandedStates[datestring] && taskLists[datestring]?.map((list, index) => (
+              
+              {taskGroupExpandedStates[datestring] !== false && taskLists[datestring]?.map((list, index) => (
                 <div
                   key={list.id}
-                  className={`list ${expandedStates[list.id] ? "expanded" : "collapsed"}`}
+                  className={`list ${expandedStates[list.id] !== false ? "expanded" : "collapsed"}`}
                 >
                   <div className="topdiv">
                     <button
@@ -569,7 +486,7 @@ function App() {
                         toggleSingleList(list.id);
                       }}
                     >
-                      {expandedStates[list.id] ? "Collapse" : "Expand"}
+                      {expandedStates[list.id] !== false ? "Collapse" : "Expand"}
                     </button>
                   </div>
 
@@ -633,7 +550,7 @@ function App() {
                     )}
                   </div>
 
-                  {expandedStates[list.id] &&
+                  {expandedStates[list.id] !== false &&
                     tasks[list.id]?.map((task) => (
                       <div key={task.id} className="task-wrapper">
                         <Task
