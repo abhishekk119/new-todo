@@ -212,19 +212,14 @@ body {
 }
 */
 
-.list {
-  /* Add transition for smooth animation */
-  transition: all 0.3s ease-in-out;
-  overflow: hidden;
-  max-height: 1000px; /* Set a reasonable max height */
-}
+
 
 .list.expanded {
   max-height: 1000px; /* Adjust this value based on your content */
 }
 
 .list.collapsed {
-  max-height: 0;
+  display: none;
 }
 
 
