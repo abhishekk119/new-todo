@@ -196,6 +196,49 @@ function App() {
     }
   }, [dategroupArray]);
 
+  function deleteTaskGroup(datestring) {
+    // Get all list IDs in this task group
+    const listIds = taskLists[datestring]?.map(list => list.id) || [];
+    
+    // Remove the task group from newTaskGroup
+    setNewTaskGroup(prev => prev.filter(task => task.date !== datestring));
+    
+    // Remove the task group from taskLists
+    setTaskLists(prev => {
+      const updated = {...prev};
+      delete updated[datestring];
+      return updated;
+    });
+    
+    // Remove all tasks associated with lists in this task group
+    setTasks(prev => {
+      const updated = {...prev};
+      listIds.forEach(id => delete updated[id]);
+      return updated;
+    });
+    
+    // Remove list categories for lists in this task group
+    setListCategories(prev => {
+      const updated = {...prev};
+      listIds.forEach(id => delete updated[id]);
+      return updated;
+    });
+    
+    // Remove incomplete counts for lists in this task group
+    setIncompleteCounts(prev => {
+      const updated = {...prev};
+      listIds.forEach(id => delete updated[id]);
+      return updated;
+    });
+    
+    // Remove expanded states for lists in this task group
+    setExpandedStates(prev => {
+      const updated = {...prev};
+      listIds.forEach(id => delete updated[id]);
+      return updated;
+    });
+  }
+
   function updatelist(datestring) {
     const newListId = Date.now();
 
@@ -606,6 +649,16 @@ function App() {
                   </button> */}
                 </div>
               ))}
+              
+              {/* Delete Task Group Button */}
+              <div className="delete-task-group-container">
+                <button 
+                  className="delete-task-group-btn"
+                  onClick={() => deleteTaskGroup(datestring)}
+                >
+                  Delete Task Group
+                </button>
+              </div>
             </div>
           </div>
         ))}
