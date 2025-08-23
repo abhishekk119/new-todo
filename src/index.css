@@ -447,12 +447,12 @@ input[type="checkbox"]:checked::before {
 
 
 
-.task-container.expandedd {
+.tasks-container.expandedd {
   max-height: 1000px;
   
 }
 
-.task-container.collapsedd {
+.tasks-container.collapsedd {
   display: none;
 }
 
