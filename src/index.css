@@ -221,19 +221,10 @@ body {
 
 .list.expanded {
   max-height: 1000px; /* Adjust this value based on your content */
-  opacity: 1;
-  visibility: visible;
 }
 
 .list.collapsed {
   max-height: 0;
-  opacity: 0;
-  visibility: hidden;
-  padding-top: 0;
-  padding-bottom: 0;
-  margin-top: 0;
-  margin-bottom: 0;
-  border-width: 0;
 }
 
 
