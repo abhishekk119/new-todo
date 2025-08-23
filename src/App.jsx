@@ -460,29 +460,21 @@ function App() {
   }
 
   // Toggle expand/collapse for all lists in a task group
-  const toggleExpandCollapse = (datestring) => {
-    const listIds = taskLists[datestring]?.map((list) => list.id) || [];
-    const allExpanded = listIds.every((id) => expandedStates[id]);
+  // Toggle expand/collapse for all lists in a task group
+const toggleExpandCollapse = (datestring) => {
+  const listIds = taskLists[datestring]?.map((list) => list.id) || [];
+  const allExpanded = listIds.every((id) => expandedStates[id]);
 
-    const newExpandedStates = { ...expandedStates };
-    const newTasksExpandedStates = { ...tasksExpandedStates };
+  const newExpandedStates = { ...expandedStates };
 
-    listIds.forEach((id) => {
-      newExpandedStates[id] = !allExpanded;
-      newTasksExpandedStates[id] = !allExpanded;
-    });
+  listIds.forEach((id) => {
+    newExpandedStates[id] = !allExpanded;
+    // Don't modify tasksExpandedStates here - keep their current state
+  });
 
-    setExpandedStates(newExpandedStates);
-    setTasksExpandedStates(newTasksExpandedStates);
-  };
-
-  // Toggle expand/collapse for a single list container
-  const toggleSingleList = (listId) => {
-    setExpandedStates((prev) => ({
-      ...prev,
-      [listId]: !prev[listId],
-    }));
-  };
+  setExpandedStates(newExpandedStates);
+  // Don't setTasksExpandedStates here
+};
 
   // Toggle expand/collapse for tasks container in a single list
   const toggleSingleTasks = (listId) => {
