@@ -553,6 +553,15 @@ function App() {
                     >
                       {listCategories[list.id] || "categories"}
                     </div>
+                    <button
+                      className="collapse-list-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleSingleList(list.id);
+                      }}
+                    >
+                      {expandedStates[list.id] ? "Collapse" : "Expand"}
+                    </button>
                   </div>
 
                   {openCategories === list.id && (
