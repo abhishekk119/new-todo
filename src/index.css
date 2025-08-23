@@ -218,10 +218,6 @@ body {
   max-height: 1000px; /* Adjust this value based on your content */
 }
 
-.list.expanded.active .tasks-container {
-  display: none;
-}
-
 .list.collapsed {
   display: none;
 }
