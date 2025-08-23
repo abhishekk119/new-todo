@@ -110,6 +110,9 @@ function App() {
   const [expandedStates, setExpandedStates] = useState(() =>
     loadFromStorage("expandedStates", {})
   );
+  const [taskGroupExpandedStates, setTaskGroupExpandedStates] = useState(() =>
+    loadFromStorage("taskGroupExpandedStates", {})
+  );
 
   // Save ALL data whenever ANY state changes
   useEffect(() => {
@@ -119,6 +122,7 @@ function App() {
     saveToStorage("listCategories", listCategories);
     saveToStorage("incompleteCounts", incompleteCounts);
     saveToStorage("expandedStates", expandedStates);
+    saveToStorage("taskGroupExpandedStates", taskGroupExpandedStates);
   }, [
     newTaskGroup,
     taskLists,
@@ -126,6 +130,7 @@ function App() {
     listCategories,
     incompleteCounts,
     expandedStates,
+    taskGroupExpandedStates,
   ]);
 
   // Calculate incomplete tasks whenever tasks change
@@ -154,6 +159,12 @@ function App() {
 
     // Add new task group to the beginning of the array
     setNewTaskGroup((prev) => [newTaskGroupItem, ...prev]);
+    
+    // Set new task group to expanded by default
+    setTaskGroupExpandedStates((prev) => ({
+      ...prev,
+      [taskDate]: true,
+    }));
   }
 
   const taskGroupByDate = newTaskGroup.reduce((groups, task) => {
@@ -235,6 +246,13 @@ function App() {
     setExpandedStates(prev => {
       const updated = {...prev};
       listIds.forEach(id => delete updated[id]);
+      return updated;
+    });
+    
+    // Remove task group expanded state
+    setTaskGroupExpandedStates(prev => {
+      const updated = {...prev};
+      delete updated[datestring];
       return updated;
     });
   }
@@ -433,18 +451,12 @@ function App() {
     setOpenCategories(null);
   }
 
-  // Toggle expand/collapse for all lists in a task group
-  const toggleExpandCollapse = (datestring) => {
-    const listIds = taskLists[datestring]?.map((list) => list.id) || [];
-    const allExpanded = listIds.every((id) => expandedStates[id]);
-
-    const newExpandedStates = { ...expandedStates };
-
-    listIds.forEach((id) => {
-      newExpandedStates[id] = !allExpanded;
-    });
-
-    setExpandedStates(newExpandedStates);
+  // Toggle expand/collapse for a task group
+  const toggleTaskGroup = (datestring) => {
+    setTaskGroupExpandedStates((prev) => ({
+      ...prev,
+      [datestring]: !prev[datestring],
+    }));
   };
 
   // Toggle expand/collapse for a single list
@@ -464,6 +476,7 @@ function App() {
     console.log("listCategories:", loadFromStorage("listCategories", {}));
     console.log("incompleteCounts:", loadFromStorage("incompleteCounts", {}));
     console.log("expandedStates:", loadFromStorage("expandedStates", {}));
+    console.log("taskGroupExpandedStates:", loadFromStorage("taskGroupExpandedStates", {}));
   };
 
   // Clear all data
@@ -474,12 +487,14 @@ function App() {
     localStorage.removeItem("listCategories");
     localStorage.removeItem("incompleteCounts");
     localStorage.removeItem("expandedStates");
+    localStorage.removeItem("taskGroupExpandedStates");
     setNewTaskGroup([]);
     setTaskLists({});
     setTasks({});
     setListCategories({});
     setIncompleteCounts({});
     setExpandedStates({});
+    setTaskGroupExpandedStates({});
   };
 
   return (
@@ -518,19 +533,15 @@ function App() {
 
                 <button
                   className="collapseexpandbtn"
-                  onClick={() => toggleExpandCollapse(datestring)}
+                  onClick={() => toggleTaskGroup(datestring)}
                 >
-                  {taskLists[datestring]?.every(
-                    (list) => expandedStates[list.id]
-                  )
-                    ? "Collapse"
-                    : "Expand"}
+                  {taskGroupExpandedStates[datestring] ? "Collapse" : "Expand"}
                 </button>
               </div>
-              {taskLists[datestring]?.map((list, index) => (
+              {taskGroupExpandedStates[datestring] && taskLists[datestring]?.map((list, index) => (
                 <div
                   key={list.id}
-                  className="list"
+                  className={`list ${expandedStates[list.id] ? "expanded" : "collapsed"}`}
                 >
                   <div className="topdiv">
                     <button
@@ -622,8 +633,8 @@ function App() {
                     )}
                   </div>
 
-                  <div className={`tasks-container ${expandedStates[list.id] ? 'expanded' : 'collapsed'}`}>
-                    {tasks[list.id]?.map((task) => (
+                  {expandedStates[list.id] &&
+                    tasks[list.id]?.map((task) => (
                       <div key={task.id} className="task-wrapper">
                         <Task
                           task={task}
@@ -646,7 +657,6 @@ function App() {
                         )}
                       </div>
                     ))}
-                  </div>
                 </div>
               ))}
               
