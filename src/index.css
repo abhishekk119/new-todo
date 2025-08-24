@@ -11,7 +11,7 @@
   border: 1px solid #1a1a1a;
   margin-bottom: 20px;
   margin-top: 20px;
-  border-radius: 10px;
+
   padding: 15px;
   display: flex;
   flex-direction: column;
@@ -276,12 +276,12 @@ body {
 
 .addtaskbtn {
   height: 35px;
-  width: 80px;
-  border: 1px solid rgb(84, 83, 83);
+  width: fit-content;
+  border: none;
   border-radius: 10px;
   cursor: pointer;
-  background-color: rgb(84, 83, 83);
-  font-family: "Inter", sans-serif;
+  background: none;
+  font-size: 20px;
   color: white;
 }
 

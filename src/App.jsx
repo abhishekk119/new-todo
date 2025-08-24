@@ -600,7 +600,7 @@ function App() {
                           updatetask(list.id);
                         }}
                       >
-                        Add Task
+                        <i class="fa-solid fa-plus"></i>
                       </button>
                       <div
                         className="categories"
