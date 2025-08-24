@@ -528,7 +528,7 @@ function App() {
     <>
       <div className="navbar">
         <button className="addnewtaskgroupbutton" onClick={updateTaskGroup}>
-          Add New Task Group
+          <i class="fa-solid fa-plus"></i>
         </button>
         {/* <button
           onClick={debugStorage}
@@ -555,7 +555,14 @@ function App() {
                   className="createnewlistbtn"
                   onClick={() => updatelist(datestring)}
                 >
-                  New List
+                  <i class="fa-regular fa-square-plus"></i>
+                </button>
+
+                <button
+                  className="delete-task-group-btn"
+                  onClick={() => deleteTaskGroup(datestring)}
+                >
+                  <i class="fa-solid fa-trash-can"></i>
                 </button>
 
                 <button
@@ -564,9 +571,11 @@ function App() {
                 >
                   {taskLists[datestring]?.every(
                     (list) => expandedStates[list.id]
-                  )
-                    ? "Collapse"
-                    : "Expand"}
+                  ) ? (
+                    <i className="fa-solid fa-circle-chevron-up"></i>
+                  ) : (
+                    <i className="fa-solid fa-circle-chevron-down"></i>
+                  )}
                 </button>
               </div>
 
@@ -602,6 +611,16 @@ function App() {
                       >
                         {listCategories[list.id] || "categories"}
                       </div>
+                      <button
+                        className="expand-collapse-list-btn"
+                        onClick={() => toggleSingleTasks(list.id)}
+                      >
+                        {tasksExpandedStates[list.id] ? (
+                          <i className="fa-solid fa-circle-chevron-up"></i>
+                        ) : (
+                          <i className="fa-solid fa-circle-chevron-down"></i>
+                        )}
+                      </button>
                     </div>
 
                     {openCategories === list.id && (
@@ -715,26 +734,9 @@ function App() {
                   </motion.div>
 
                   {/* Add expand/collapse buttons for individual list and tasks */}
-                  <div className="list-control-buttons">
-                    <button
-                      className="expand-collapse-list-btn"
-                      onClick={() => toggleSingleTasks(list.id)}
-                    >
-                      {tasksExpandedStates[list.id] ? "Collapse" : "Expand"}
-                    </button>
-                  </div>
+                  <div className="list-control-buttons"></div>
                 </motion.div>
               ))}
-
-              {/* Delete Task Group Button */}
-              <div className="delete-task-group-container">
-                <button
-                  className="delete-task-group-btn"
-                  onClick={() => deleteTaskGroup(datestring)}
-                >
-                  Delete Task Group
-                </button>
-              </div>
             </div>
           </div>
         ))}
