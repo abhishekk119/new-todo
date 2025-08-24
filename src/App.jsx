@@ -530,7 +530,7 @@ function App() {
     <>
       <div className="navbar">
         <div className="logo" style={{ color: "white" }}>
-          <p>MyTodo.</p>
+          <p>MyTodo</p>
         </div>
         <button className="addnewtaskgroupbutton" onClick={updateTaskGroup}>
           <i class="fa-solid fa-plus"></i>
@@ -541,9 +541,10 @@ function App() {
             margin: "0",
             padding: "0",
             fontFamily: "Inter, sans-serif",
+            fontSize: "14px",
           }}
         >
-          (This button adds a daily task group)
+          (Adds a daily task group)
         </p>
         {/* <button
           onClick={debugStorage}

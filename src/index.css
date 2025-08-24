@@ -259,7 +259,7 @@ body {
 .addnewtaskgroupbutton {
   height: 70px;
   width: 160px;
-  border: 1px solid white;
+  border: 2px solid white;
   border-radius: 12px;
   cursor: pointer;
   background-color: rgb(84, 83, 83);
