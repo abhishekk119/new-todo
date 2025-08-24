@@ -20,6 +20,10 @@
   background-color: #1a1a1a;
 }
 
+.task-text p {
+  color: white;
+}
+
 .list {
   height: auto;
   width: 450px;
