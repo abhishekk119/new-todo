@@ -212,19 +212,22 @@ body {
 }
 */
 
-
-
-.list.expanded {
-  max-height: 1000px; /* Adjust this value based on your content */
+/* .list.expanded {
+  max-height: 1000px;
 }
 
 .list.collapsed {
   display: none;
-  animation: fadeOutUp; /* referring directly to the animation's @keyframe declaration */
-  animation-duration: 2s; /* don't forget to set a duration! */
-  
-}
+  animation: fadeOutUp;
+  animation-duration: 2s;
+} */
 
+.list[style*="height: 0px"],
+.list[style*="height:0px"] {
+  margin: 5px;
+  padding: 5px;
+  border: none;
+}
 
 .addnewtaskgroupbutton {
   height: 35px;
@@ -360,7 +363,6 @@ input[type="checkbox"] {
   cursor: pointer;
   position: relative;
   /* White drop shadow */
-  
 }
 
 /* Checked state */
@@ -397,11 +399,11 @@ input[type="checkbox"]:checked::before {
 }
 
 .smalldiv {
- display: flex;
- align-items: center;
- justify-content: left;
- width: 100%;
- gap: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  width: 100%;
+  gap: 4px;
 }
 
 .task-wrapper {
@@ -434,16 +436,13 @@ input[type="checkbox"]:checked::before {
   font-size: 14px;
 }
 
-
-
-.tasks-container.expandedd {
+/* .tasks-container.expandedd {
   max-height: 1000px;
-  
 }
 
 .tasks-container.collapsedd {
   display: none;
-}
+} */
 
 .expand-collapse-list-btn {
   height: 35px;
