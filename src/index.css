@@ -198,7 +198,7 @@
   width: 100%;
   background-color: black;
   margin-top: 20px;
-  margin-bottom: 10px;
+
   padding: 0;
   gap: 15px;
 }
@@ -257,7 +257,7 @@ body {
 }
 
 .addnewtaskgroupbutton {
-  height: 70px;
+  height: 40px;
   width: 160px;
   border: 2px solid white;
   border-radius: 12px;

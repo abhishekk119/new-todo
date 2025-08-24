@@ -529,9 +529,6 @@ function App() {
   return (
     <>
       <div className="navbar">
-        <div className="logo" style={{ color: "white" }}>
-          <p>MyTodo</p>
-        </div>
         <button className="addnewtaskgroupbutton" onClick={updateTaskGroup}>
           <i class="fa-solid fa-plus"></i>
         </button>
