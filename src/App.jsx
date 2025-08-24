@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import Task from "./Task";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Storage functions
 const loadFromStorage = (key, defaultValue) => {
@@ -48,6 +49,23 @@ const saveToStorage = (key, value) => {
   }
 };
 
+// Helper function to get current date string
+const getCurrentDateString = () => {
+  const today = new Date();
+  return `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+};
+
+// Helper function to compare dates
+const isDateAfter = (date1, date2) => {
+  const [day1, month1, year1] = date1.split("/").map(Number);
+  const [day2, month2, year2] = date2.split("/").map(Number);
+
+  const dateObj1 = new Date(year1, month1 - 1, day1);
+  const dateObj2 = new Date(year2, month2 - 1, day2);
+
+  return dateObj1 > dateObj2;
+};
+
 function App() {
   const taskGroupContainerRef = useRef(null);
   const isEditingRef = useRef(false);
@@ -71,6 +89,7 @@ function App() {
         localStorage.removeItem("listCategories");
         localStorage.removeItem("incompleteCounts");
         localStorage.removeItem("expandedStates");
+        localStorage.removeItem("tasksExpandedStates");
         window.location.reload();
       }
     }
@@ -93,6 +112,9 @@ function App() {
   const [expandedStates, setExpandedStates] = useState(() =>
     loadFromStorage("expandedStates", {})
   );
+  const [tasksExpandedStates, setTasksExpandedStates] = useState(() =>
+    loadFromStorage("tasksExpandedStates", {})
+  );
 
   // Save ALL data whenever ANY state changes
   useEffect(() => {
@@ -102,6 +124,7 @@ function App() {
     saveToStorage("listCategories", listCategories);
     saveToStorage("incompleteCounts", incompleteCounts);
     saveToStorage("expandedStates", expandedStates);
+    saveToStorage("tasksExpandedStates", tasksExpandedStates);
   }, [
     newTaskGroup,
     taskLists,
@@ -109,6 +132,7 @@ function App() {
     listCategories,
     incompleteCounts,
     expandedStates,
+    tasksExpandedStates,
   ]);
 
   // Calculate incomplete tasks whenever tasks change
@@ -179,6 +203,56 @@ function App() {
     }
   }, [dategroupArray]);
 
+  function deleteTaskGroup(datestring) {
+    // Get all list IDs in this task group
+    const listIds = taskLists[datestring]?.map((list) => list.id) || [];
+
+    // Remove the task group from newTaskGroup
+    setNewTaskGroup((prev) => prev.filter((task) => task.date !== datestring));
+
+    // Remove the task group from taskLists
+    setTaskLists((prev) => {
+      const updated = { ...prev };
+      delete updated[datestring];
+      return updated;
+    });
+
+    // Remove all tasks associated with lists in this task group
+    setTasks((prev) => {
+      const updated = { ...prev };
+      listIds.forEach((id) => delete updated[id]);
+      return updated;
+    });
+
+    // Remove list categories for lists in this task group
+    setListCategories((prev) => {
+      const updated = { ...prev };
+      listIds.forEach((id) => delete updated[id]);
+      return updated;
+    });
+
+    // Remove incomplete counts for lists in this task group
+    setIncompleteCounts((prev) => {
+      const updated = { ...prev };
+      listIds.forEach((id) => delete updated[id]);
+      return updated;
+    });
+
+    // Remove expanded states for lists in this task group
+    setExpandedStates((prev) => {
+      const updated = { ...prev };
+      listIds.forEach((id) => delete updated[id]);
+      return updated;
+    });
+
+    // Remove tasks expanded states for lists in this task group
+    setTasksExpandedStates((prev) => {
+      const updated = { ...prev };
+      listIds.forEach((id) => delete updated[id]);
+      return updated;
+    });
+  }
+
   function updatelist(datestring) {
     const newListId = Date.now();
 
@@ -207,6 +281,12 @@ function App() {
       ...prev,
       [newListId]: true,
     }));
+
+    // Set new tasks container to expanded by default
+    setTasksExpandedStates((prev) => ({
+      ...prev,
+      [newListId]: true,
+    }));
   }
 
   function updatetask(listId) {
@@ -222,6 +302,8 @@ function App() {
       content: "Add task...",
       checked: false,
       dueDate: "",
+      createdDate: getCurrentDateString(),
+      lastEditedDate: getCurrentDateString(),
     };
 
     setTasks((prev) => ({
@@ -296,6 +378,13 @@ function App() {
           delete updatedStates[listId];
           return updatedStates;
         });
+
+        // Remove the list from tasksExpandedStates
+        setTasksExpandedStates((prevStates) => {
+          const updatedStates = { ...prevStates };
+          delete updatedStates[listId];
+          return updatedStates;
+        });
       }
 
       return updatedTasks;
@@ -306,7 +395,13 @@ function App() {
     setTasks((prev) => ({
       ...prev,
       [listId]: (prev[listId] || []).map((task) =>
-        task.id === taskId ? { ...task, content: newContent } : task
+        task.id === taskId
+          ? {
+              ...task,
+              content: newContent,
+              lastEditedDate: getCurrentDateString(),
+            }
+          : task
       ),
     }));
   }
@@ -315,7 +410,13 @@ function App() {
     setTasks((prev) => ({
       ...prev,
       [listId]: (prev[listId] || []).map((task) =>
-        task.id === taskId ? { ...task, checked: checked } : task
+        task.id === taskId
+          ? {
+              ...task,
+              checked: checked,
+              lastEditedDate: getCurrentDateString(),
+            }
+          : task
       ),
     }));
 
@@ -342,7 +443,13 @@ function App() {
     setTasks((prev) => ({
       ...prev,
       [listId]: (prev[listId] || []).map((task) =>
-        task.id === taskId ? { ...task, dueDate: dueDate } : task
+        task.id === taskId
+          ? {
+              ...task,
+              dueDate: dueDate,
+              lastEditedDate: getCurrentDateString(),
+            }
+          : task
       ),
     }));
   }
@@ -360,6 +467,7 @@ function App() {
   }
 
   // Toggle expand/collapse for all lists in a task group
+  // Toggle expand/collapse for all lists in a task group
   const toggleExpandCollapse = (datestring) => {
     const listIds = taskLists[datestring]?.map((list) => list.id) || [];
     const allExpanded = listIds.every((id) => expandedStates[id]);
@@ -368,14 +476,16 @@ function App() {
 
     listIds.forEach((id) => {
       newExpandedStates[id] = !allExpanded;
+      // Don't modify tasksExpandedStates here - keep their current state
     });
 
     setExpandedStates(newExpandedStates);
+    // Don't setTasksExpandedStates here
   };
 
-  // Toggle expand/collapse for a single list
-  const toggleSingleList = (listId) => {
-    setExpandedStates((prev) => ({
+  // Toggle expand/collapse for tasks container in a single list
+  const toggleSingleTasks = (listId) => {
+    setTasksExpandedStates((prev) => ({
       ...prev,
       [listId]: !prev[listId],
     }));
@@ -390,6 +500,10 @@ function App() {
     console.log("listCategories:", loadFromStorage("listCategories", {}));
     console.log("incompleteCounts:", loadFromStorage("incompleteCounts", {}));
     console.log("expandedStates:", loadFromStorage("expandedStates", {}));
+    console.log(
+      "tasksExpandedStates:",
+      loadFromStorage("tasksExpandedStates", {})
+    );
   };
 
   // Clear all data
@@ -400,12 +514,14 @@ function App() {
     localStorage.removeItem("listCategories");
     localStorage.removeItem("incompleteCounts");
     localStorage.removeItem("expandedStates");
+    localStorage.removeItem("tasksExpandedStates");
     setNewTaskGroup([]);
     setTaskLists({});
     setTasks({});
     setListCategories({});
     setIncompleteCounts({});
     setExpandedStates({});
+    setTasksExpandedStates({});
   };
 
   return (
@@ -453,119 +569,172 @@ function App() {
                     : "Expand"}
                 </button>
               </div>
+
               {taskLists[datestring]?.map((list, index) => (
-                <div
+                <motion.div
                   key={list.id}
-                  className={`list ${
-                    expandedStates[list.id] ? "expanded" : "collapsed"
-                  }`}
+                  className="list"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{
+                    height: expandedStates[list.id] ? "auto" : 0,
+                    opacity: expandedStates[list.id] ? 1 : 0,
+                  }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  style={{ overflow: "hidden" }}
                 >
-                  <div className="topdiv">
-                    <button
-                      className="addtaskbtn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        updatetask(list.id);
-                      }}
-                    >
-                      Add Task
-                    </button>
-                    <div
-                      className="categories"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleCategories(list.id);
-                      }}
-                    >
-                      {listCategories[list.id] || "categories"}
+                  <div className="list-header">
+                    <div className="topdiv">
+                      <button
+                        className="addtaskbtn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          updatetask(list.id);
+                        }}
+                      >
+                        Add Task
+                      </button>
+                      <div
+                        className="categories"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleCategories(list.id);
+                        }}
+                      >
+                        {listCategories[list.id] || "categories"}
+                      </div>
                     </div>
-                  </div>
 
-                  {openCategories === list.id && (
-                    <div className="dropdowndiv">
-                      <p
-                        onClick={() =>
-                          updatecategories(list.id, "🍉 Groceries")
-                        }
-                      >
-                        🍉 Groceries
-                      </p>
-                      <p
-                        onClick={() => updatecategories(list.id, "🛒 Shopping")}
-                      >
-                        🛒 Shopping
-                      </p>
-                      <p
-                        onClick={() => updatecategories(list.id, "✨ Personal")}
-                      >
-                        ✨ Personal
-                      </p>
-                      <p
-                        onClick={() => updatecategories(list.id, "📝 General")}
-                      >
-                        📝 General
-                      </p>
-                      <p onClick={() => updatecategories(list.id, "💡 Ideas")}>
-                        💡 Ideas
-                      </p>
-                      <p
-                        onClick={() => updatecategories(list.id, "📐 Project")}
-                      >
-                        📐 Project
-                      </p>
-                      <p
-                        onClick={() =>
-                          updatecategories(list.id, "‼️ Important")
-                        }
-                      >
-                        ‼️ Important
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Display incomplete tasks message */}
-                  <div className="task-status-message">
-                    {incompleteCounts[list.id] > 0 ? (
-                      <p style={{ color: "white" }}>
-                        ⚠️ You have {incompleteCounts[list.id]} incomplete task
-                        {incompleteCounts[list.id] !== 1 ? "s" : ""}
-                      </p>
-                    ) : (
-                      tasks[list.id]?.length > 0 && (
-                        <p style={{ color: "white" }}>
-                          All tasks completed! 🎉
+                    {openCategories === list.id && (
+                      <div className="dropdowndiv">
+                        <p
+                          onClick={() =>
+                            updatecategories(list.id, "🍉 Groceries")
+                          }
+                        >
+                          🍉 Groceries
                         </p>
-                      )
+                        <p
+                          onClick={() =>
+                            updatecategories(list.id, "🛒 Shopping")
+                          }
+                        >
+                          🛒 Shopping
+                        </p>
+                        <p
+                          onClick={() =>
+                            updatecategories(list.id, "✨ Personal")
+                          }
+                        >
+                          ✨ Personal
+                        </p>
+                        <p
+                          onClick={() =>
+                            updatecategories(list.id, "📝 General")
+                          }
+                        >
+                          📝 General
+                        </p>
+                        <p
+                          onClick={() => updatecategories(list.id, "💡 Ideas")}
+                        >
+                          💡 Ideas
+                        </p>
+                        <p
+                          onClick={() =>
+                            updatecategories(list.id, "📐 Project")
+                          }
+                        >
+                          📐 Project
+                        </p>
+                        <p
+                          onClick={() =>
+                            updatecategories(list.id, "‼️ Important")
+                          }
+                        >
+                          ‼️ Important
+                        </p>
+                      </div>
                     )}
+
+                    {/* Display incomplete tasks message */}
+                    <div className="task-status-message">
+                      {incompleteCounts[list.id] > 0 ? (
+                        <p style={{ color: "white" }}>
+                          ⚠️ You have {incompleteCounts[list.id]} incomplete
+                          task
+                          {incompleteCounts[list.id] !== 1 ? "s" : ""}
+                        </p>
+                      ) : (
+                        tasks[list.id]?.length > 0 && (
+                          <div className="smalldiv">
+                            {" "}
+                            <div className="small"></div>
+                            <p style={{ color: "white" }}>
+                              All tasks completed!
+                            </p>
+                          </div>
+                        )
+                      )}
+                    </div>
                   </div>
 
-                  {expandedStates[list.id] &&
-                    tasks[list.id]?.map((task) => (
-                      <Task
-                        key={task.id}
-                        task={task}
-                        onDelete={() => deleteTask(list.id, task.id)}
-                        onUpdateContent={(newContent) =>
-                          updateTaskContent(list.id, task.id, newContent)
-                        }
-                        onUpdateChecked={(checked) =>
-                          updateTaskChecked(list.id, task.id, checked)
-                        }
-                        onUpdateDueDate={(dueDate) =>
-                          updateTaskDueDate(list.id, task.id, dueDate)
-                        }
-                      />
-                    ))}
-
-                  {/* Add expand/collapse button for individual list */}
-                  {/* <button
-                    onClick={() => toggleSingleList(list.id)}
-                    style={{ marginTop: "10px" }}
+                  <motion.div
+                    className="tasks-container"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{
+                      height: tasksExpandedStates[list.id] ? "auto" : 0,
+                      opacity: tasksExpandedStates[list.id] ? 1 : 0,
+                    }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    style={{ overflow: "hidden", margin: "0", padding: "0" }}
                   >
-                    {expandedStates[list.id] ? "Collapse List" : "Expand List"}
-                  </button> */}
-                </div>
+                    {tasks[list.id]?.map((task) => (
+                      <div key={task.id} className="task-wrapper">
+                        <Task
+                          task={task}
+                          onDelete={() => deleteTask(list.id, task.id)}
+                          onUpdateContent={(newContent) =>
+                            updateTaskContent(list.id, task.id, newContent)
+                          }
+                          onUpdateChecked={(checked) =>
+                            updateTaskChecked(list.id, task.id, checked)
+                          }
+                          onUpdateDueDate={(dueDate) =>
+                            updateTaskDueDate(list.id, task.id, dueDate)
+                          }
+                        />
+                        {/* Show edited message if task was created/edited on a date after the task group date */}
+                        {task.lastEditedDate &&
+                          isDateAfter(task.lastEditedDate, datestring) && (
+                            <div className="task-edited-message">
+                              <span>Edited on {task.lastEditedDate}</span>
+                            </div>
+                          )}
+                      </div>
+                    ))}
+                  </motion.div>
+
+                  {/* Add expand/collapse buttons for individual list and tasks */}
+                  <div className="list-control-buttons">
+                    <button
+                      className="expand-collapse-list-btn"
+                      onClick={() => toggleSingleTasks(list.id)}
+                    >
+                      {tasksExpandedStates[list.id] ? "Collapse" : "Expand"}
+                    </button>
+                  </div>
+                </motion.div>
               ))}
+
+              {/* Delete Task Group Button */}
+              <div className="delete-task-group-container">
+                <button
+                  className="delete-task-group-btn"
+                  onClick={() => deleteTaskGroup(datestring)}
+                >
+                  Delete Task Group
+                </button>
+              </div>
             </div>
           </div>
         ))}

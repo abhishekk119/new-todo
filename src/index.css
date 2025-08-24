@@ -117,13 +117,14 @@
   position: absolute;
   height: auto;
   width: 130px;
-  border: 1px solid rgb(84, 83, 83);
-  background-color: rgb(84, 83, 83);
+  border: 1px solid black;
+  background-color: black;
   color: white;
   border-radius: 10px;
   z-index: 10;
   margin-left: 330px;
   padding-left: 10px;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.6));
   /* Align with the right edge of the parent */
 }
 
@@ -136,7 +137,7 @@
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid grey;
+  border-bottom: 10px solid black;
 }
 
 .list {
@@ -201,6 +202,7 @@ body {
   width: 100%;
 }
 
+/*
 .list.expanded {
   height: auto;
 }
@@ -208,15 +210,34 @@ body {
 .list.collapsed {
   display: none;
 }
+*/
+
+/* .list.expanded {
+  max-height: 1000px;
+}
+
+.list.collapsed {
+  display: none;
+  animation: fadeOutUp;
+  animation-duration: 2s;
+} */
+
+.list[style*="height: 0px"],
+.list[style*="height:0px"] {
+  margin: 5px;
+  padding: 5px;
+  border: none;
+}
 
 .addnewtaskgroupbutton {
   height: 35px;
   width: 170px;
-  border: 1px solid white;
+  border: 1px solid rgb(84, 83, 83);
   border-radius: 12px;
   cursor: pointer;
-  background-color: white;
+  background-color: rgb(84, 83, 83);
   font-family: "Inter", sans-serif;
+  color: white;
 }
 
 .topoflistdiv {
@@ -233,41 +254,45 @@ body {
 .createnewlistbtn {
   height: 35px;
   width: 80px;
-  border: 1px solid white;
+  border: 1px solid rgb(84, 83, 83);
   border-radius: 10px;
   cursor: pointer;
-  background-color: white;
+  background-color: rgb(84, 83, 83);
   font-family: "Inter", sans-serif;
+  color: white;
 }
 
 .collapseexpandbtn {
   height: 35px;
   width: 80px;
-  border: 1px solid white;
+  border: 1px solid rgb(84, 83, 83);
   border-radius: 10px;
   cursor: pointer;
-  background-color: white;
+  background-color: rgb(84, 83, 83);
   font-family: "Inter", sans-serif;
+  color: white;
 }
 
 .addtaskbtn {
   height: 35px;
   width: 80px;
-  border: 1px solid white;
+  border: 1px solid rgb(84, 83, 83);
   border-radius: 10px;
   cursor: pointer;
-  background-color: white;
+  background-color: rgb(84, 83, 83);
   font-family: "Inter", sans-serif;
+  color: white;
 }
 
 .deletebtn {
   height: 30px;
   width: 60px;
-  border: 1px solid white;
+  border: 1px solid rgb(84, 83, 83);
   border-radius: 10px;
   cursor: pointer;
-  background-color: white;
+  background-color: rgb(84, 83, 83);
   font-family: "Inter", sans-serif;
+  color: white;
 }
 
 .date-and-duedate {
@@ -321,6 +346,115 @@ body {
   color: #666;
   transition: color 0.2s ease;
   pointer-events: none; /* Make the icon not interfere with clicks */
+}
+
+input[type="checkbox"] {
+  /* Remove default styling */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Custom checkbox */
+  width: 20px;
+  height: 20px;
+  border: 1px solid gray;
+  background-color: gray;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  /* White drop shadow */
+}
+
+/* Checked state */
+input[type="checkbox"]:checked {
+  background-color: rgb(84, 83, 83);
+  border-color: rgb(84, 83, 83);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px;
+}
+
+/* Checkmark using pseudo-element 
+input[type="checkbox"]:checked::before {
+  content: "✓";
+  position: absolute;
+  color: white;
+  font-size: 16px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}*/
+
+.small {
+  width: 17px;
+  height: 17px;
+  border: 1px solid #2da44e;
+  background-color: #2da44e;
+  border-radius: 50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px;
+}
+
+.smalldiv {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  width: 100%;
+  gap: 4px;
+}
+
+.task-wrapper {
+  position: relative;
+}
+
+.task-edited-message {
+  font-size: 11px;
+  color: #ffa500;
+  text-align: right;
+  margin-top: -14px;
+  margin-bottom: 10px;
+  padding-right: 10px;
+}
+
+.delete-task-group-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.delete-task-group-btn {
+  background-color: rgb(84, 83, 83);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* .tasks-container.expandedd {
+  max-height: 1000px;
+}
+
+.tasks-container.collapsedd {
+  display: none;
+} */
+
+.expand-collapse-list-btn {
+  height: 35px;
+  width: 120px;
+  border: 1px solid rgb(84, 83, 83);
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: rgb(84, 83, 83);
+  font-family: "Inter", sans-serif;
+  color: white;
+  margin-top: 10px;
+  align-self: center;
 }
 
 @media (max-width: 767px) {
