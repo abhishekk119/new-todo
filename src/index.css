@@ -224,8 +224,8 @@ body {
 
 .list[style*="height: 0px"],
 .list[style*="height:0px"] {
-  margin: 5px;
-  padding: 5px;
+  margin: 0;
+  padding: 0;
   border: none;
 }
 
