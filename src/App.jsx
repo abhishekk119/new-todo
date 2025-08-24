@@ -528,7 +528,7 @@ function App() {
     <>
       <div className="navbar">
         <button className="addnewtaskgroupbutton" onClick={updateTaskGroup}>
-          Add New Task Group
+          <i class="fa-solid fa-plus"></i>
         </button>
         {/* <button
           onClick={debugStorage}
@@ -555,7 +555,14 @@ function App() {
                   className="createnewlistbtn"
                   onClick={() => updatelist(datestring)}
                 >
-                  New List
+                  <i class="fa-regular fa-square-plus"></i>
+                </button>
+
+                <button
+                  className="delete-task-group-btn"
+                  onClick={() => deleteTaskGroup(datestring)}
+                >
+                  <i class="fa-solid fa-trash-can"></i>
                 </button>
 
                 <button
@@ -564,9 +571,11 @@ function App() {
                 >
                   {taskLists[datestring]?.every(
                     (list) => expandedStates[list.id]
-                  )
-                    ? "Collapse"
-                    : "Expand"}
+                  ) ? (
+                    <i className="fa-solid fa-circle-chevron-up"></i>
+                  ) : (
+                    <i className="fa-solid fa-circle-chevron-down"></i>
+                  )}
                 </button>
               </div>
 
@@ -720,21 +729,15 @@ function App() {
                       className="expand-collapse-list-btn"
                       onClick={() => toggleSingleTasks(list.id)}
                     >
-                      {tasksExpandedStates[list.id] ? "Collapse" : "Expand"}
+                      {tasksExpandedStates[list.id] ? (
+                        <i className="fa-solid fa-circle-chevron-up"></i>
+                      ) : (
+                        <i className="fa-solid fa-circle-chevron-down"></i>
+                      )}
                     </button>
                   </div>
                 </motion.div>
               ))}
-
-              {/* Delete Task Group Button */}
-              <div className="delete-task-group-container">
-                <button
-                  className="delete-task-group-btn"
-                  onClick={() => deleteTaskGroup(datestring)}
-                >
-                  Delete Task Group
-                </button>
-              </div>
             </div>
           </div>
         ))}
