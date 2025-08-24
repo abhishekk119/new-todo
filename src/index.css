@@ -28,7 +28,7 @@
   margin: 15px;
   border-radius: 10px;
   padding: 15px;
-  background-color: #3d3b3b;
+  background-color: #302f2f;
 }
 
 .task-container {
@@ -282,7 +282,7 @@ body {
   cursor: pointer;
   background: none;
   font-size: 20px;
-  color: white;
+  color: rgb(147, 145, 145);
 }
 
 .deletebtn {
@@ -452,7 +452,7 @@ input[type="checkbox"]:checked::before {
   cursor: pointer;
   font-size: 20px;
   font-family: "Inter", sans-serif;
-  color: white;
+  color: rgb(147, 145, 145);
   margin-top: 10px;
   align-self: center;
 }

@@ -678,7 +678,7 @@ function App() {
                     {/* Display incomplete tasks message */}
                     <div className="task-status-message">
                       {incompleteCounts[list.id] > 0 ? (
-                        <p style={{ color: "white" }}>
+                        <p style={{ color: "rgb(147, 145, 145)" }}>
                           ⚠️ You have {incompleteCounts[list.id]} incomplete
                           task
                           {incompleteCounts[list.id] !== 1 ? "s" : ""}
@@ -688,7 +688,7 @@ function App() {
                           <div className="smalldiv">
                             {" "}
                             <div className="small"></div>
-                            <p style={{ color: "white" }}>
+                            <p style={{ color: "rgb(147, 145, 145)" }}>
                               All tasks completed!
                             </p>
                           </div>
