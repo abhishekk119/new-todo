@@ -459,7 +459,7 @@ input[type="checkbox"]:checked::before {
 
 @media (max-width: 767px) {
   .taskgroup {
-    width: 85%;
+    width: 90%;
   }
 
   .list {
