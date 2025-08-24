@@ -134,7 +134,7 @@ function Task({
         </div>
         <div className="delete-button-and-time-div">
           <button className="deletebtn" onClick={handleDelete}>
-            Delete
+            <i class="fa-solid fa-trash"></i>
           </button>
         </div>
       </div>
