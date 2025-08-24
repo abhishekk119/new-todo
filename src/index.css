@@ -509,6 +509,11 @@ input[type="checkbox"]:checked::before {
   tap-highlight-color: transparent; /* Standard property */
 }
 
+.checkbox {
+  -webkit-tap-highlight-color: transparent; /* For iOS/Safari */
+  tap-highlight-color: transparent; /* Standard property */
+}
+
 @media (max-width: 767px) {
   .taskgroup {
     width: 90%;

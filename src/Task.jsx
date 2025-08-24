@@ -113,6 +113,7 @@ function Task({
           <div className="checkbox-div">
             <input
               type="checkbox"
+              className="checkbox"
               checked={task.checked || false}
               onChange={handleCheckboxChange}
             />
