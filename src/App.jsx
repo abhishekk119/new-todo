@@ -290,11 +290,13 @@ function App() {
   }
 
   function updatetask(listId) {
-    const taskTime = new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
+    const taskTime = new Date()
+      .toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+      .toUpperCase();
 
     const newTask = {
       id: Date.now(),
