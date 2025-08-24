@@ -529,9 +529,22 @@ function App() {
   return (
     <>
       <div className="navbar">
+        <div className="logo" style={{ color: "white" }}>
+          <p>MyTodo.</p>
+        </div>
         <button className="addnewtaskgroupbutton" onClick={updateTaskGroup}>
           <i class="fa-solid fa-plus"></i>
         </button>
+        <p
+          style={{
+            color: "white",
+            margin: "0",
+            padding: "0",
+            fontFamily: "Inter, sans-serif",
+          }}
+        >
+          (This button adds a daily task group)
+        </p>
         {/* <button
           onClick={debugStorage}
           style={{ marginLeft: "10px", background: "blue" }}
