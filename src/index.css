@@ -106,6 +106,11 @@
   cursor: pointer;
 }
 
+.categories {
+  -webkit-tap-highlight-color: transparent; /* For iOS/Safari */
+  tap-highlight-color: transparent; /* Standard property */
+}
+
 .topdiv {
   display: flex;
   align-items: center;
@@ -155,6 +160,8 @@
 
 .dropdowndiv p {
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent; /* For iOS/Safari */
+  tap-highlight-color: transparent; /* Standard property */
 }
 
 .duedatediv {
@@ -177,6 +184,11 @@
   font-size: 18px;
   cursor: pointer;
   z-index: 1;
+}
+
+.calendar-icon {
+  -webkit-tap-highlight-color: transparent; /* For iOS/Safari */
+  tap-highlight-color: transparent; /* Standard property */
 }
 
 .navbar {
@@ -242,6 +254,11 @@ body {
   color: white;
 }
 
+.addnewtaskgroupbutton {
+  -webkit-tap-highlight-color: transparent; /* For iOS/Safari */
+  tap-highlight-color: transparent; /* Standard property */
+}
+
 .topoflistdiv {
   display: flex;
   align-items: center;
@@ -264,6 +281,11 @@ body {
   color: white;
 }
 
+.createnewlistbtn {
+  -webkit-tap-highlight-color: transparent; /* For iOS/Safari */
+  tap-highlight-color: transparent; /* Standard property */
+}
+
 .collapseexpandbtn {
   height: 35px;
   width: fit-content;
@@ -272,6 +294,11 @@ body {
   background: none;
   font-size: 20px;
   color: white;
+}
+
+.collapseexpandbtn {
+  -webkit-tap-highlight-color: transparent; /* For iOS/Safari */
+  tap-highlight-color: transparent; /* Standard property */
 }
 
 .addtaskbtn {
@@ -285,6 +312,11 @@ body {
   color: rgb(147, 145, 145);
 }
 
+.addtaskbtn {
+  -webkit-tap-highlight-color: transparent; /* For iOS/Safari */
+  tap-highlight-color: transparent; /* Standard property */
+}
+
 .deletebtn {
   height: 30px;
   width: 60px;
@@ -294,6 +326,11 @@ body {
   background: none;
   font-size: 20px;
   color: gray;
+}
+
+.deletebtn {
+  -webkit-tap-highlight-color: transparent; /* For iOS/Safari */
+  tap-highlight-color: transparent; /* Standard property */
 }
 
 .date-and-duedate {
@@ -311,6 +348,11 @@ body {
   display: inline-block;
   width: 24px;
   height: 24px;
+}
+
+.calendar-icon-wrapper {
+  -webkit-tap-highlight-color: transparent; /* For iOS/Safari */
+  tap-highlight-color: transparent; /* Standard property */
 }
 
 .calendar-icon-wrapper input[type="date"] {
@@ -436,6 +478,11 @@ input[type="checkbox"]:checked::before {
   cursor: pointer;
 }
 
+.delete-task-group-btn {
+  -webkit-tap-highlight-color: transparent; /* For iOS/Safari */
+  tap-highlight-color: transparent; /* Standard property */
+}
+
 /* .tasks-container.expandedd {
   max-height: 1000px;
 }
@@ -455,6 +502,11 @@ input[type="checkbox"]:checked::before {
   color: rgb(147, 145, 145);
   margin-top: 10px;
   align-self: center;
+}
+
+.expand-collapse-list-btn {
+  -webkit-tap-highlight-color: transparent; /* For iOS/Safari */
+  tap-highlight-color: transparent; /* Standard property */
 }
 
 @media (max-width: 767px) {
