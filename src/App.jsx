@@ -558,201 +558,240 @@ function App() {
       </div>
 
       <div ref={taskGroupContainerRef}>
-        {dategroupArray.map(([datestring, groups]) => (
-          <div key={datestring} className="taskgroupwrapper">
-            <div className="taskgroup">
-              <div className="topoflistdiv">
-                <h3>{datestring}</h3>
+        {dategroupArray.map(([datestring, groups]) => {
+          // Calculate total incomplete tasks for this task group
+          const listIds = taskLists[datestring]?.map((list) => list.id) || [];
+          const totalIncomplete = listIds.reduce((total, listId) => {
+            return total + (incompleteCounts[listId] || 0);
+          }, 0);
 
-                <button
-                  className="createnewlistbtn"
-                  onClick={() => updatelist(datestring)}
-                >
-                  <i class="fa-regular fa-square-plus"></i>
-                </button>
+          return (
+            <div key={datestring} className="taskgroupwrapper">
+              <div className="taskgroup">
+                <div className="topoflistdiv">
+                  <h3>{datestring}</h3>
 
-                <button
-                  className="delete-task-group-btn"
-                  onClick={() => deleteTaskGroup(datestring)}
-                >
-                  <i class="fa-solid fa-trash-can"></i>
-                </button>
+                  <button
+                    className="createnewlistbtn"
+                    onClick={() => updatelist(datestring)}
+                  >
+                    <i class="fa-regular fa-square-plus"></i>
+                  </button>
 
-                <button
-                  className="collapseexpandbtn"
-                  onClick={() => toggleExpandCollapse(datestring)}
-                >
-                  {taskLists[datestring]?.every(
-                    (list) => expandedStates[list.id]
-                  ) ? (
-                    <i className="fa-solid fa-circle-chevron-up"></i>
-                  ) : (
-                    <i className="fa-solid fa-circle-chevron-down"></i>
-                  )}
-                </button>
-              </div>
+                  <button
+                    className="delete-task-group-btn"
+                    onClick={() => deleteTaskGroup(datestring)}
+                  >
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
 
-              {taskLists[datestring]?.map((list, index) => (
-                <motion.div
-                  key={list.id}
-                  className="list"
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{
-                    height: expandedStates[list.id] ? "auto" : 0,
-                    opacity: expandedStates[list.id] ? 1 : 0,
-                  }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  style={{ overflow: "hidden" }}
-                >
-                  <div className="list-header">
-                    <div className="topdiv">
-                      <button
-                        className="addtaskbtn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          updatetask(list.id);
-                        }}
-                      >
-                        <i class="fa-solid fa-plus"></i>
-                      </button>
-                      <div
-                        className="categories"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleCategories(list.id);
-                        }}
-                      >
-                        {listCategories[list.id] || "categories"}
-                      </div>
-                      <button
-                        className="expand-collapse-list-btn"
-                        onClick={() => toggleSingleTasks(list.id)}
-                      >
-                        {tasksExpandedStates[list.id] ? (
-                          <i className="fa-solid fa-circle-chevron-up"></i>
-                        ) : (
-                          <i className="fa-solid fa-circle-chevron-down"></i>
-                        )}
-                      </button>
-                    </div>
-
-                    {openCategories === list.id && (
-                      <div className="dropdowndiv">
-                        <p
-                          onClick={() =>
-                            updatecategories(list.id, "🍉 Groceries")
-                          }
-                        >
-                          🍉 Groceries
-                        </p>
-                        <p
-                          onClick={() =>
-                            updatecategories(list.id, "🛒 Shopping")
-                          }
-                        >
-                          🛒 Shopping
-                        </p>
-                        <p
-                          onClick={() =>
-                            updatecategories(list.id, "✨ Personal")
-                          }
-                        >
-                          ✨ Personal
-                        </p>
-                        <p
-                          onClick={() =>
-                            updatecategories(list.id, "📝 General")
-                          }
-                        >
-                          📝 General
-                        </p>
-                        <p
-                          onClick={() => updatecategories(list.id, "💡 Ideas")}
-                        >
-                          💡 Ideas
-                        </p>
-                        <p
-                          onClick={() =>
-                            updatecategories(list.id, "📐 Project")
-                          }
-                        >
-                          📐 Project
-                        </p>
-                        <p
-                          onClick={() =>
-                            updatecategories(list.id, "‼️ Important")
-                          }
-                        >
-                          ‼️ Important
-                        </p>
-                      </div>
+                  <button
+                    className="collapseexpandbtn"
+                    onClick={() => toggleExpandCollapse(datestring)}
+                  >
+                    {taskLists[datestring]?.every(
+                      (list) => expandedStates[list.id]
+                    ) ? (
+                      <i className="fa-solid fa-circle-chevron-up"></i>
+                    ) : (
+                      <i className="fa-solid fa-circle-chevron-down"></i>
                     )}
+                  </button>
+                </div>
 
-                    {/* Display incomplete tasks message */}
-                    <div className="task-status-message">
-                      {incompleteCounts[list.id] > 0 ? (
-                        <p style={{ color: "rgb(147, 145, 145)" }}>
-                          ⚠️ You have {incompleteCounts[list.id]} incomplete
-                          task
-                          {incompleteCounts[list.id] !== 1 ? "s" : ""}
-                        </p>
-                      ) : (
-                        tasks[list.id]?.length > 0 && (
-                          <div className="smalldiv">
-                            {" "}
-                            <div className="small"></div>
-                            <p style={{ color: "rgb(147, 145, 145)" }}>
-                              All tasks completed!
-                            </p>
-                          </div>
-                        )
-                      )}
-                    </div>
+                {/* Display total incomplete tasks for the task group */}
+                {totalIncomplete > 0 && (
+                  <div className="task-group-incomplete-count">
+                    <p
+                      style={{
+                        color: "rgb(147, 145, 145)",
+                        margin: "8px 0",
+                        fontSize: "14px",
+                      }}
+                    >
+                      ⚠️ Total incomplete: {totalIncomplete} task
+                      {totalIncomplete !== 1 ? "s" : ""}
+                    </p>
                   </div>
+                )}
+                {totalIncomplete === 0 && (
+                  <div className="task-group-incomplete-count">
+                    <p
+                      style={{
+                        color: "rgb(147, 145, 145)",
+                        margin: "8px 0",
+                        fontSize: "14px",
+                      }}
+                    >
+                      <div className="small"></div>
+                    </p>
+                  </div>
+                )}
 
+                {taskLists[datestring]?.map((list, index) => (
                   <motion.div
-                    className="tasks-container"
+                    key={list.id}
+                    className="list"
                     initial={{ height: 0, opacity: 0 }}
                     animate={{
-                      height: tasksExpandedStates[list.id] ? "auto" : 0,
-                      opacity: tasksExpandedStates[list.id] ? 1 : 0,
+                      height: expandedStates[list.id] ? "auto" : 0,
+                      opacity: expandedStates[list.id] ? 1 : 0,
                     }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    style={{ overflow: "hidden", margin: "0", padding: "0" }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                    style={{ overflow: "hidden" }}
                   >
-                    {tasks[list.id]?.map((task) => (
-                      <div key={task.id} className="task-wrapper">
-                        <Task
-                          task={task}
-                          onDelete={() => deleteTask(list.id, task.id)}
-                          onUpdateContent={(newContent) =>
-                            updateTaskContent(list.id, task.id, newContent)
-                          }
-                          onUpdateChecked={(checked) =>
-                            updateTaskChecked(list.id, task.id, checked)
-                          }
-                          onUpdateDueDate={(dueDate) =>
-                            updateTaskDueDate(list.id, task.id, dueDate)
-                          }
-                        />
-                        {/* Show edited message if task was created/edited on a date after the task group date */}
-                        {task.lastEditedDate &&
-                          isDateAfter(task.lastEditedDate, datestring) && (
-                            <div className="task-edited-message">
-                              <span>Edited on {task.lastEditedDate}</span>
-                            </div>
+                    <div className="list-header">
+                      <div className="topdiv">
+                        <button
+                          className="addtaskbtn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            updatetask(list.id);
+                          }}
+                        >
+                          <i class="fa-solid fa-plus"></i>
+                        </button>
+                        <div
+                          className="categories"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleCategories(list.id);
+                          }}
+                        >
+                          {listCategories[list.id] || "categories"}
+                        </div>
+                        <button
+                          className="expand-collapse-list-btn"
+                          onClick={() => toggleSingleTasks(list.id)}
+                        >
+                          {tasksExpandedStates[list.id] ? (
+                            <i className="fa-solid fa-circle-chevron-up"></i>
+                          ) : (
+                            <i className="fa-solid fa-circle-chevron-down"></i>
                           )}
+                        </button>
                       </div>
-                    ))}
-                  </motion.div>
 
-                  {/* Add expand/collapse buttons for individual list and tasks */}
-                  <div className="list-control-buttons"></div>
-                </motion.div>
-              ))}
+                      {openCategories === list.id && (
+                        <div className="dropdowndiv">
+                          <p
+                            onClick={() =>
+                              updatecategories(list.id, "🍉 Groceries")
+                            }
+                          >
+                            🍉 Groceries
+                          </p>
+                          <p
+                            onClick={() =>
+                              updatecategories(list.id, "🛒 Shopping")
+                            }
+                          >
+                            🛒 Shopping
+                          </p>
+                          <p
+                            onClick={() =>
+                              updatecategories(list.id, "✨ Personal")
+                            }
+                          >
+                            ✨ Personal
+                          </p>
+                          <p
+                            onClick={() =>
+                              updatecategories(list.id, "📝 General")
+                            }
+                          >
+                            📝 General
+                          </p>
+                          <p
+                            onClick={() =>
+                              updatecategories(list.id, "💡 Ideas")
+                            }
+                          >
+                            💡 Ideas
+                          </p>
+                          <p
+                            onClick={() =>
+                              updatecategories(list.id, "📐 Project")
+                            }
+                          >
+                            📐 Project
+                          </p>
+                          <p
+                            onClick={() =>
+                              updatecategories(list.id, "‼️ Important")
+                            }
+                          >
+                            ‼️ Important
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Display incomplete tasks message */}
+                      <div className="task-status-message">
+                        {incompleteCounts[list.id] > 0 ? (
+                          <p style={{ color: "rgb(147, 145, 145)" }}>
+                            ⚠️ You have {incompleteCounts[list.id]} incomplete
+                            task
+                            {incompleteCounts[list.id] !== 1 ? "s" : ""}
+                          </p>
+                        ) : (
+                          tasks[list.id]?.length > 0 && (
+                            <div className="smalldiv">
+                              {" "}
+                              <div className="small"></div>
+                              <p style={{ color: "rgb(147, 145, 145)" }}>
+                                All tasks completed!
+                              </p>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </div>
+
+                    <motion.div
+                      className="tasks-container"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{
+                        height: tasksExpandedStates[list.id] ? "auto" : 0,
+                        opacity: tasksExpandedStates[list.id] ? 1 : 0,
+                      }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      style={{ overflow: "hidden", margin: "0", padding: "0" }}
+                    >
+                      {tasks[list.id]?.map((task) => (
+                        <div key={task.id} className="task-wrapper">
+                          <Task
+                            task={task}
+                            onDelete={() => deleteTask(list.id, task.id)}
+                            onUpdateContent={(newContent) =>
+                              updateTaskContent(list.id, task.id, newContent)
+                            }
+                            onUpdateChecked={(checked) =>
+                              updateTaskChecked(list.id, task.id, checked)
+                            }
+                            onUpdateDueDate={(dueDate) =>
+                              updateTaskDueDate(list.id, task.id, dueDate)
+                            }
+                          />
+                          {/* Show edited message if task was created/edited on a date after the task group date */}
+                          {task.lastEditedDate &&
+                            isDateAfter(task.lastEditedDate, datestring) && (
+                              <div className="task-edited-message">
+                                <span>Edited on {task.lastEditedDate}</span>
+                              </div>
+                            )}
+                        </div>
+                      ))}
+                    </motion.div>
+
+                    {/* Add expand/collapse buttons for individual list and tasks */}
+                    <div className="list-control-buttons"></div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {dategroupArray.length === 0 && (

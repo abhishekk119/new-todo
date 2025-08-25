@@ -267,6 +267,10 @@ body {
   color: white;
 }
 
+.addnewtaskgroupbutton:active {
+  transform: scale(1.1); /* grows by 5% */
+}
+
 .addnewtaskgroupbutton {
   -webkit-tap-highlight-color: transparent; /* For iOS/Safari */
   tap-highlight-color: transparent; /* Standard property */
@@ -291,7 +295,11 @@ body {
   cursor: pointer;
   background: none;
   font-size: 30px;
-  color: white;
+  color: rgb(147, 145, 145);
+}
+
+.createnewlistbtn:active {
+  transform: scale(1.1); /* grows by 5% */
 }
 
 .createnewlistbtn {
@@ -306,7 +314,11 @@ body {
   cursor: pointer;
   background: none;
   font-size: 25px;
-  color: white;
+  color: rgb(147, 145, 145);
+}
+
+.collapseexpandbtn:active {
+  transform: scale(1.1); /* grows by 5% */
 }
 
 .collapseexpandbtn {
@@ -323,6 +335,10 @@ body {
   background: none;
   font-size: 20px;
   color: rgb(147, 145, 145);
+}
+
+.addtaskbtn:active {
+  transform: scale(1.1); /* grows by 5% */
 }
 
 .addtaskbtn {
@@ -418,6 +434,7 @@ input[type="checkbox"] {
   outline: none;
   cursor: pointer;
   position: relative;
+  border: 2px solid rgb(185, 182, 182);
   /* White drop shadow */
 }
 
@@ -429,7 +446,20 @@ input[type="checkbox"]:checked {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 16px;
+  border: 2px solid rgb(185, 182, 182);
 }
+
+input[type="checkbox"]:hover {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+input[type="checkbox"]:active {
+  transform: scale(0.9);
+}
+
+/* input[type="checkbox"]:checked {
+  animation: checkmarkAnim 0.3s ease-in-out;
+} */
 
 /* Checkmark using pseudo-element 
 input[type="checkbox"]:checked::before {
@@ -515,6 +545,10 @@ input[type="checkbox"]:checked::before {
   color: rgb(147, 145, 145);
   margin-top: 10px;
   align-self: center;
+}
+
+.expand-collapse-list-btn:active {
+  transform: scale(1.1); /* grows by 5% */
 }
 
 .expand-collapse-list-btn {
