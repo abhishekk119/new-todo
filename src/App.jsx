@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import Task from "./Task";
 import { motion, AnimatePresence } from "framer-motion";
+import ThemeToggle from "./Themetoggle";
 
 // Storage functions
 const loadFromStorage = (key, defaultValue) => {
@@ -529,12 +530,13 @@ function App() {
   return (
     <>
       <div className="navbar">
+        <ThemeToggle />
         <button className="addnewtaskgroupbutton" onClick={updateTaskGroup}>
           <i class="fa-solid fa-plus"></i>
         </button>
         <p
+          className="desc"
           style={{
-            color: "white",
             margin: "0",
             padding: "0",
             fontFamily: "Inter, sans-serif",

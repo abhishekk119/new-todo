@@ -129,7 +129,6 @@ function Task({
               onFocus={handleFocus}
               onBlur={handleBlur}
               onInput={handleInput}
-              style={{ color: "white" }}
             />
           </div>
         </div>
