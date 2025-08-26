@@ -624,15 +624,7 @@ function App() {
                   listIds.length > 0 &&
                   totalIncomplete === 0 && (
                     <div className="task-group-incomplete-count">
-                      <p
-                        style={{
-                          color: "rgb(147, 145, 145)",
-                          margin: "8px 0",
-                          fontSize: "14px",
-                        }}
-                      >
-                        <div className="small"></div>
-                      </p>
+                      <div className="small"></div>
                     </div>
                   )}
 
