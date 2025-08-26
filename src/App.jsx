@@ -567,6 +567,10 @@ function App() {
             return total + (incompleteCounts[listId] || 0);
           }, 0);
 
+          const taskGroupHasTasks = listIds.some(
+            (listId) => tasks[listId]?.length > 0
+          );
+
           return (
             <div key={datestring} className="taskgroupwrapper">
               <div className="taskgroup">
@@ -616,31 +620,42 @@ function App() {
                     </p>
                   </div>
                 )}
-                {totalIncomplete === 0 && (
-                  <div className="task-group-incomplete-count">
-                    <p
-                      style={{
-                        color: "rgb(147, 145, 145)",
-                        margin: "8px 0",
-                        fontSize: "14px",
-                      }}
-                    >
-                      <div className="small"></div>
-                    </p>
-                  </div>
-                )}
+                {taskGroupHasTasks &&
+                  listIds.length > 0 &&
+                  totalIncomplete === 0 && (
+                    <div className="task-group-incomplete-count">
+                      <p
+                        style={{
+                          color: "rgb(147, 145, 145)",
+                          margin: "8px 0",
+                          fontSize: "14px",
+                        }}
+                      >
+                        <div className="small"></div>
+                      </p>
+                    </div>
+                  )}
 
                 {taskLists[datestring]?.map((list, index) => (
                   <motion.div
                     key={list.id}
                     className="list"
-                    initial={{ height: 0, opacity: 0 }}
+                    initial={{ height: 0, opacity: 0, padding: 0, margin: 0 }}
                     animate={{
                       height: expandedStates[list.id] ? "auto" : 0,
                       opacity: expandedStates[list.id] ? 1 : 0,
+                      padding: expandedStates[list.id] ? "15px" : "0",
+                      margin: expandedStates[list.id] ? "15px" : "0",
                     }}
-                    transition={{ duration: 0.2, ease: "easeInOut" }}
-                    style={{ overflow: "hidden" }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    style={{
+                      overflow: "hidden",
+                      border: expandedStates[list.id]
+                        ? "2px solid var(--border-secondary)"
+                        : "none",
+                      backgroundColor: "var(--bg-tertiary)",
+                      borderRadius: "10px",
+                    }}
                   >
                     <div className="list-header">
                       <div className="topdiv">

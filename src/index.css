@@ -605,6 +605,59 @@ input[type="checkbox"]:checked {
   transform: scale(0.95);
 }
 
+/* .list {
+  height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+  overflow: hidden;
+}
+
+.list.expanded {
+  height: auto;
+  opacity: 1;
+  padding: 15px;
+  margin: 15px;
+  border: 2px solid var(--border-secondary);
+} */
+
+/* @keyframes expandList {
+  from {
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    max-height: 1000px; 
+    opacity: 1;
+  }
+}
+
+@keyframes collapseList {
+  from {
+    max-height: 1000px; 
+    opacity: 1;
+  }
+  to {
+    max-height: 0;
+    opacity: 0;
+  }
+}
+
+.list {
+  height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+  overflow: hidden;
+  animation: collapseList 0.3s ease-in-out forwards;
+}
+
+.list.expanded {
+  animation: expandList 0.3s ease-in-out forwards;
+} */
+
 @media (max-width: 767px) {
   .taskgroup {
     width: 90%;
