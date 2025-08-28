@@ -67,9 +67,28 @@ const isDateAfter = (date1, date2) => {
   return dateObj1 > dateObj2;
 };
 
+// Custom hook for mobile detection
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  return isMobile;
+};
+
 function App() {
   const taskGroupContainerRef = useRef(null);
   const isEditingRef = useRef(false);
+  const isMobile = useIsMobile();
 
   // Add this at the beginning of your App component
   useEffect(() => {
@@ -95,6 +114,7 @@ function App() {
       }
     }
   }, []);
+
   // Initialize ALL state from localStorage
   const [newTaskGroup, setNewTaskGroup] = useState(() =>
     loadFromStorage("newTaskGroup", [])
@@ -169,13 +189,6 @@ function App() {
     setNewTaskGroup((prev) => [newTaskGroupItem, ...prev]);
   }
 
-  function updateListCaption(listId, newCaption) {
-    setListCaptions((prev) => ({
-      ...prev,
-      [listId]: newCaption,
-    }));
-  }
-
   const taskGroupByDate = newTaskGroup.reduce((groups, task) => {
     if (!groups[task.date]) {
       groups[task.date] = [];
@@ -239,6 +252,13 @@ function App() {
 
     // Remove list categories for lists in this task group
     setListCategories((prev) => {
+      const updated = { ...prev };
+      listIds.forEach((id) => delete updated[id]);
+      return updated;
+    });
+
+    // Remove list captions for lists in this task group
+    setListCaptions((prev) => {
       const updated = { ...prev };
       listIds.forEach((id) => delete updated[id]);
       return updated;
@@ -481,7 +501,13 @@ function App() {
     setOpenCategories(null);
   }
 
-  // Toggle expand/collapse for all lists in a task group
+  function updateListCaption(listId, newCaption) {
+    setListCaptions((prev) => ({
+      ...prev,
+      [listId]: newCaption,
+    }));
+  }
+
   // Toggle expand/collapse for all lists in a task group
   const toggleExpandCollapse = (datestring) => {
     const listIds = taskLists[datestring]?.map((list) => list.id) || [];
@@ -491,11 +517,9 @@ function App() {
 
     listIds.forEach((id) => {
       newExpandedStates[id] = !allExpanded;
-      // Don't modify tasksExpandedStates here - keep their current state
     });
 
     setExpandedStates(newExpandedStates);
-    // Don't setTasksExpandedStates here
   };
 
   // Toggle expand/collapse for tasks container in a single list
@@ -504,6 +528,33 @@ function App() {
       ...prev,
       [listId]: !prev[listId],
     }));
+  };
+
+  // Move task up or down
+  const moveTask = (listId, taskId, direction) => {
+    setTasks((prev) => {
+      const currentTasks = prev[listId] || [];
+      const currentIndex = currentTasks.findIndex((task) => task.id === taskId);
+
+      if (
+        (direction === "up" && currentIndex <= 0) ||
+        (direction === "down" && currentIndex >= currentTasks.length - 1)
+      ) {
+        return prev;
+      }
+
+      const newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+      const newTasks = [...currentTasks];
+      [newTasks[currentIndex], newTasks[newIndex]] = [
+        newTasks[newIndex],
+        newTasks[currentIndex],
+      ];
+
+      return {
+        ...prev,
+        [listId]: newTasks,
+      };
+    });
   };
 
   // Debug function to check storage
@@ -527,6 +578,7 @@ function App() {
     localStorage.removeItem("taskLists");
     localStorage.removeItem("tasks");
     localStorage.removeItem("listCategories");
+    localStorage.removeItem("listCaptions");
     localStorage.removeItem("incompleteCounts");
     localStorage.removeItem("expandedStates");
     localStorage.removeItem("tasksExpandedStates");
@@ -534,6 +586,7 @@ function App() {
     setTaskLists({});
     setTasks({});
     setListCategories({});
+    setListCaptions({});
     setIncompleteCounts({});
     setExpandedStates({});
     setTasksExpandedStates({});
@@ -544,7 +597,7 @@ function App() {
       <div className="navbar">
         <ThemeToggle />
         <button className="addnewtaskgroupbutton" onClick={updateTaskGroup}>
-          <i class="fa-solid fa-plus"></i>
+          <i className="fa-solid fa-plus"></i>
         </button>
         <p
           className="desc"
@@ -557,18 +610,6 @@ function App() {
         >
           (Adds a daily task group)
         </p>
-        {/* <button
-          onClick={debugStorage}
-          style={{ marginLeft: "10px", background: "blue" }}
-        >
-          Debug Storage
-        </button>
-        <button
-          onClick={clearAllData}
-          style={{ marginLeft: "10px", background: "red", color: "white" }}
-        >
-          Clear All Data
-        </button> */}
       </div>
 
       <div ref={taskGroupContainerRef}>
@@ -593,14 +634,14 @@ function App() {
                     className="createnewlistbtn"
                     onClick={() => updatelist(datestring)}
                   >
-                    <i class="fa-regular fa-square-plus"></i>
+                    <i className="fa-regular fa-square-plus"></i>
                   </button>
 
                   <button
                     className="delete-task-group-btn"
                     onClick={() => deleteTaskGroup(datestring)}
                   >
-                    <i class="fa-solid fa-trash-can"></i>
+                    <i className="fa-solid fa-trash-can"></i>
                   </button>
 
                   <button
@@ -670,7 +711,7 @@ function App() {
                             updatetask(list.id);
                           }}
                         >
-                          <i class="fa-solid fa-plus"></i>
+                          <i className="fa-solid fa-plus"></i>
                         </button>
                         <div
                           className="categories"
@@ -706,9 +747,8 @@ function App() {
                               e.target.blur();
                             }
                           }}
-                          style={{ color: "rgb(147, 145, 145)" }}
                         >
-                          {listCaptions[list.id] || "Add caption"}
+                          {listCaptions[list.id] || "Captions"}
                         </p>
                       </div>
 
@@ -812,6 +852,11 @@ function App() {
                             onUpdateDueDate={(dueDate) =>
                               updateTaskDueDate(list.id, task.id, dueDate)
                             }
+                            onMoveUp={() => moveTask(list.id, task.id, "up")}
+                            onMoveDown={() =>
+                              moveTask(list.id, task.id, "down")
+                            }
+                            isMobile={isMobile}
                           />
                           {/* Show edited message if task was created/edited on a date after the task group date */}
                           {task.lastEditedDate &&
@@ -823,9 +868,6 @@ function App() {
                         </div>
                       ))}
                     </motion.div>
-
-                    {/* Add expand/collapse buttons for individual list and tasks */}
-                    <div className="list-control-buttons"></div>
                   </motion.div>
                 ))}
               </div>
