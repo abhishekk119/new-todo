@@ -749,7 +749,7 @@ function App() {
                           }}
                           style={{ color: "rgb(112, 111, 111)" }}
                         >
-                          {listCaptions[list.id] || "Captions"}
+                          {listCaptions[list.id] || "Add caption"}
                         </p>
                       </div>
 
