@@ -19,7 +19,6 @@ export default defineConfig({
         theme_color: "#000000",
         icons: [
           { src: "/android-icon-192x192.png", sizes: "192x192", type: "image/png" },
-          
         ],
       },
       workbox: {
