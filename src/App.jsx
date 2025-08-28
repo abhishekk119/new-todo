@@ -116,6 +116,9 @@ function App() {
   const [tasksExpandedStates, setTasksExpandedStates] = useState(() =>
     loadFromStorage("tasksExpandedStates", {})
   );
+  const [listCaptions, setListCaptions] = useState(() =>
+    loadFromStorage("listCaptions", {})
+  );
 
   // Save ALL data whenever ANY state changes
   useEffect(() => {
@@ -126,6 +129,7 @@ function App() {
     saveToStorage("incompleteCounts", incompleteCounts);
     saveToStorage("expandedStates", expandedStates);
     saveToStorage("tasksExpandedStates", tasksExpandedStates);
+    saveToStorage("listCaptions", listCaptions);
   }, [
     newTaskGroup,
     taskLists,
@@ -134,6 +138,7 @@ function App() {
     incompleteCounts,
     expandedStates,
     tasksExpandedStates,
+    listCaptions,
   ]);
 
   // Calculate incomplete tasks whenever tasks change
@@ -162,6 +167,13 @@ function App() {
 
     // Add new task group to the beginning of the array
     setNewTaskGroup((prev) => [newTaskGroupItem, ...prev]);
+  }
+
+  function updateListCaption(listId, newCaption) {
+    setListCaptions((prev) => ({
+      ...prev,
+      [listId]: newCaption,
+    }));
   }
 
   const taskGroupByDate = newTaskGroup.reduce((groups, task) => {
@@ -681,6 +693,24 @@ function App() {
                         </button>
                       </div>
 
+                      <div className="captionsdiv">
+                        <p
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            updateListCaption(list.id, e.target.textContent)
+                          }
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              e.target.blur();
+                            }
+                          }}
+                        >
+                          {listCaptions[list.id] || "Add caption"}
+                        </p>
+                      </div>
+
                       {openCategories === list.id && (
                         <div className="dropdowndiv">
                           <p
@@ -805,7 +835,7 @@ function App() {
 
       {dategroupArray.length === 0 && (
         <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>
-          No task groups yet. Click "Add New Task Group" to get started!
+          No task groups yet. Create above to get started!
         </div>
       )}
     </>
