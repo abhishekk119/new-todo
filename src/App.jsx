@@ -706,6 +706,7 @@ function App() {
                               e.target.blur();
                             }
                           }}
+                          style={{ color: "rgb(147, 145, 145)" }}
                         >
                           {listCaptions[list.id] || "Add caption"}
                         </p>
