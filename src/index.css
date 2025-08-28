@@ -672,8 +672,8 @@ input[type="checkbox"]:checked {
 .reorder-btn {
   background: none;
   border: none;
-  height: 23px;
-  width: 23px;
+  height: 25px;
+  width: 25px;
   border-radius: 50%;
   color: var(--border-tertiary);
 }
