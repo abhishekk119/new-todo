@@ -164,7 +164,7 @@ function Task({
               </span>
             )}
           </div>
-          {isMobile && (
+          
             <div className="mobile-reorder-buttons">
               <button
                 onClick={onMoveUp}
@@ -181,7 +181,7 @@ function Task({
                 <i class="fa-solid fa-circle-down"></i>
               </button>
             </div>
-          )}
+          
           <div className="time">
             <p style={{ color: "#666" }}>{task.time}</p>
           </div>
