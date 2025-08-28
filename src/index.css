@@ -658,6 +658,24 @@ input[type="checkbox"]:checked {
   animation: expandList 0.3s ease-in-out forwards;
 } */
 
+/* Drag and drop styles */
+/* Drag and drop styles */
+.mobile-reorder-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  gap: 5px;
+}
+
+.reorder-btn {
+  background: none;
+  border: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  color: var(--border-tertiary);
+}
 @media (max-width: 767px) {
   .taskgroup {
     width: 90%;
